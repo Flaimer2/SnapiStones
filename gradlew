@@ -66,6 +66,7 @@
 
 # Resolve links: $0 may be a link
 app_path=$0
+chmod +x gradlew
 
 # Need this for daisy-chained symlinks.
 while
