@@ -11,7 +11,7 @@ shadowJar.apply {
 }
 
 group = "ru.mcsnapix"
-version = "0.8"
+version = "0.9"
 
 repositories {
     mavenCentral()
@@ -66,7 +66,9 @@ tasks {
         relocateDependency("space.arim.dazzleconf")
         relocateDependency("org.yaml")
         relocateDependency("com.zaxxer")
-        relocateDependency("co.aikar.idb")
+        relocate("co.aikar.commands", "ru.mcsnapix.library.acf")
+        relocate("co.aikar.idb", "ru.mcsnapix.library.idb")
+        relocate("co.aikar.locales", "ru.mcsnapix.library.locales")
     }
 
     compileJava {
