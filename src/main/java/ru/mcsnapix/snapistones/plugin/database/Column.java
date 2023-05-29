@@ -10,13 +10,13 @@ public enum Column {
     MAX_OWNERS("max_owners"),
     MAX_MEMBERS("max_members");
 
-    private final String column;
+    private final String name;
 
-    Column(String column) {
-        this.column = column;
+    Column(String name) {
+        this.name = name;
     }
 
-    public String column() {
-        return column;
+    public String getName() {
+        return name;
     }
 }

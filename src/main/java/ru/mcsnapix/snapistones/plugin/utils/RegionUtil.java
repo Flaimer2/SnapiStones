@@ -81,10 +81,7 @@ public class RegionUtil {
         Set<String> disabledRegions = new HashSet<>(config.disableRegion());
 
         for (ProtectedRegion pr : regionManager.getRegions().values()) {
-            if (pr.getId().equalsIgnoreCase(ProtectedRegion.GLOBAL_REGION)) {
-                continue;
-            }
-            if (disabledRegions.contains(pr.getId())) {
+            if (pr.getId().equalsIgnoreCase(ProtectedRegion.GLOBAL_REGION) || disabledRegions.contains(pr.getId())) {
                 continue;
             }
 

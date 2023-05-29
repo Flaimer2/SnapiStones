@@ -32,8 +32,7 @@ public class HomeManager {
     }
 
     public boolean hasLocation(ProtectedRegion region) {
-        Database database = new Database(region);
-        return database.location() != null;
+        return new Database(region).location() != null;
     }
 
     public List<ProtectedRegion> listRegionWithHome() {

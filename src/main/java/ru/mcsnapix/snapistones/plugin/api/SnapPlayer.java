@@ -34,7 +34,6 @@ public class SnapPlayer {
     private final LocalPlayer localPlayer;
     private final RegionUtil regionUtil;
 
-
     protected SnapPlayer(@NonNull Player player, @NonNull PlaceholderParser placeholderParser) {
         this.player = player;
         this.placeholderParser = placeholderParser;
@@ -110,7 +109,7 @@ public class SnapPlayer {
     }
 
     public List<ProtectedRegion> ownerRegions() {
-        return regionUtil.getRegions().stream().filter(region -> region.isOwner(localPlayer)).collect(Collectors.toList());
+        return regionUtil.getRegions().stream().filter(r -> r.isOwner(localPlayer)).collect(Collectors.toList());
     }
 
     public void addPotionEffect(EffectOptions effectOptions) {

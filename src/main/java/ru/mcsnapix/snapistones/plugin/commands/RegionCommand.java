@@ -364,7 +364,7 @@ public class RegionCommand extends BaseCommand {
             snapPlayer.sendMessage(message.regionInfo().message());
             return;
         }
-        throw new RuntimeException("Region or block null, please fix");
+        plugin.log().error("Player or Region is null");
     }
 
     private boolean hasRegion(SnapPlayer player, String id) {

@@ -31,6 +31,7 @@ import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ import java.util.Map;
 @Getter
 public final class SnapiStones extends JavaPlugin {
     private static SnapiStones plugin;
-    private final Map<XMaterial, ProtectedBlock> protectedBlockMap = new HashMap<>();
+    private final EnumMap<XMaterial, ProtectedBlock> protectedBlockMap = new EnumMap<>(XMaterial.class);
     private final ConfigurationOptions options = new ConfigurationOptions.Builder()
             .sorter(new AnnotationBasedSorter())
             .setCreateSingleElementCollections(true)
@@ -111,8 +112,8 @@ public final class SnapiStones extends JavaPlugin {
 
     private void enableMySQL() {
         MySQLConfig config = mysqlConfig.data();
-        DatabaseOptions options = DatabaseOptions.builder().mysql(config.username(), config.password(), config.database(), config.host()).build();
-        Database db = PooledDatabaseOptions.builder().options(options).createHikariDatabase();
+        DatabaseOptions databaseOptions = DatabaseOptions.builder().mysql(config.username(), config.password(), config.database(), config.host()).build();
+        Database db = PooledDatabaseOptions.builder().options(databaseOptions).createHikariDatabase();
         DB.setGlobalDatabase(db);
 
         log.info("§aMySQL запустился");
@@ -156,9 +157,12 @@ public final class SnapiStones extends JavaPlugin {
 
     private void addProtectedBlocksFromConfig() {
         Map<String, BlockOptions> blockMap = blockConfig.data().blocks();
-        for (String key : blockMap.keySet()) {
+
+        for (Map.Entry<String, BlockOptions> entry : blockMap.entrySet()) {
+            String key = entry.getKey();
+            BlockOptions blockOptions = entry.getValue();
+
             XMaterial blockMaterial = XMaterial.matchXMaterial(key).orElse(XMaterial.BEDROCK);
-            BlockOptions blockOptions = blockMap.get(key);
             ProtectedBlock protectedBlock = ProtectedBlock.builder()
                     .radius(blockOptions.radius())
                     .material(blockMaterial)

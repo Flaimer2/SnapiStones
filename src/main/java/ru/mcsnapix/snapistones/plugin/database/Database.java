@@ -37,12 +37,12 @@ public class Database {
 
     @SneakyThrows
     private int getColumnAsInt(Column column) {
-        return DB.getFirstColumn("SELECT " + column.column() + " FROM regions WHERE `region_name` = ?", column.column(), regionId);
+        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", column.getName(), regionId);
     }
 
     @SneakyThrows
     private String getColumnAsString(Column column) {
-        return DB.getFirstColumn("SELECT " + column.column() + " FROM regions WHERE `region_name` = ?", column.column(), regionId);
+        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", column.getName(), regionId);
     }
 
     public List<String> getColumnAsList(Column column) {
@@ -52,7 +52,7 @@ public class Database {
 
     @SneakyThrows
     private void updateColumn(Column column, String value) {
-        DB.executeUpdateAsync("UPDATE regions SET " + column.column() + " = ? WHERE region_name = ?", value, regionId);
+        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, regionId);
     }
 
     public List<String> owners() {
