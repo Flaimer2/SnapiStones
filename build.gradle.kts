@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("org.sonarqube") version "3.5.0.2730"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -44,6 +45,14 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("co.aikar:idb-core:1.0.0-SNAPSHOT")
     implementation("com.zaxxer:HikariCP:2.4.1")
+}
+
+sonarqube {
+  properties {
+    property("sonar.projectKey", "Flaimer2_SnapiStones")
+    property("sonar.organization", "flaimer2-1")
+    property("sonar.host.url", "https://sonarcloud.io")
+  }
 }
 
 val libraryPackage = "ru.mcsnapix.snapistones.libraries"
