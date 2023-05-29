@@ -66,7 +66,6 @@
 
 # Resolve links: $0 may be a link
 app_path=$0
-chmod +x gradlew
 
 # Need this for daisy-chained symlinks.
 while
@@ -205,6 +204,12 @@ set -- \
         -classpath "$CLASSPATH" \
         org.gradle.wrapper.GradleWrapperMain \
         "$@"
+
+# Stop when "xargs" is not available.
+if ! command -v xargs >/dev/null 2>&1
+then
+    die "xargs is not available"
+fi
 
 # Use "xargs" to parse quoted args.
 #
