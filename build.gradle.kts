@@ -8,6 +8,7 @@ plugins {
 val shadowJar: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar by tasks
 shadowJar.apply {
     mergeServiceFiles()
+    archiveFileName.set("${project.name}.jar")
 }
 
 group = "ru.mcsnapix"
@@ -87,6 +88,7 @@ bukkit {
     version = "0.9"
     main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
     description = "Плагин на блоки привата"
+    depend = listOf("WorldEdit", "WorldGuard")
     website = "https://mcsnapix.ru"
     authors = listOf("SnapiX", "Flaimer")
 }

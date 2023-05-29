@@ -15,6 +15,9 @@ public interface UpgradeConfig {
         return effectOptionsMap;
     }
 
+    @ConfDefault.DefaultObject("defaultEffects")
+    Map<String, @SubSection EffectOptions> effects();
+
     static Map<Integer, Integer> defaultLimitOwner() {
         Map<Integer, Integer> limitOptionsMap = new HashMap<>();
         limitOptionsMap.put(1, 2);
@@ -24,6 +27,10 @@ public interface UpgradeConfig {
         limitOptionsMap.put(5, 6);
         return limitOptionsMap;
     }
+
+    @ConfKey("limit.owner")
+    @ConfDefault.DefaultObject("defaultLimitOwner")
+    Map<Integer, Integer> limitOwner();
 
     static Map<Integer, Integer> defaultLimitMember() {
         Map<Integer, Integer> limitOptionsMap = new HashMap<>();
@@ -35,13 +42,6 @@ public interface UpgradeConfig {
         return limitOptionsMap;
     }
 
-    @ConfDefault.DefaultObject("defaultEffects")
-    Map<String, @SubSection EffectOptions> effects();
-
-    @ConfKey("limit.owner")
-    @ConfDefault.DefaultObject("defaultLimitOwner")
-    Map<Integer, Integer> limitOwner();
-
     @ConfKey("limit.member")
     @ConfDefault.DefaultObject("defaultLimitMember")
     Map<Integer, Integer> limitMember();
@@ -49,21 +49,6 @@ public interface UpgradeConfig {
     @SubSection
     MessageSection message();
 
-    /*
-        name: 'Блок привата'
-        lore: |-
-            Улучшения:
-            %effectBought%
-            %MaxOwners%
-            %MaxMembers%
-
-        if then
-            effectBought = Эффекты:
-                            Скорость
-                            Прыгучесть
-        if then MaxOwners =
-            Максимальное количество игроков в качестве владельцев в регионе
-     */
     @SubSection
     ItemSection item();
 

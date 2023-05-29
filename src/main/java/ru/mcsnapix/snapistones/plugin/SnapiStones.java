@@ -58,22 +58,18 @@ public final class SnapiStones extends JavaPlugin {
     }
 
     @Override
-    public void onLoad() {
-        loadConfigs();
-        module = new Module();
-    }
-
-    @Override
     public void onEnable() {
         PluginManager pluginManager = getServer().getPluginManager();
         plugin = this;
         loadWorldGuard();
+        loadConfigs();
         addProtectedBlocksFromConfig();
         commands = new Commands();
         adventure = BukkitAudiences.create(this);
         enableMySQL();
         registerHandlers(pluginManager);
         registerListeners(pluginManager);
+        module = new Module();
     }
 
     public void onReload() {

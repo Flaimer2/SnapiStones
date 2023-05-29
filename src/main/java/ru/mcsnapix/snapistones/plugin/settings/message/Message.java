@@ -46,8 +46,6 @@ public interface Message {
     @SubSection
     RegionListSection regionList();
 
-    ElementOnPlayersSection elementOnPlayers();
-
     @SubSection
     CommandSection command();
 
@@ -77,17 +75,6 @@ public interface Message {
 
         @ConfDefault.DefaultString("  <white>У вас <red>нет <white>регионов")
         String noRegion();
-    }
-
-    interface ElementOnPlayersSection {
-        @ConfDefault.DefaultString("%another_vault_prefix%%another_player_name%")
-        String name();
-
-        @ConfDefault.DefaultStrings({
-                "",
-                "§aНажмите, чтобы добавить игрока",
-        })
-        List<String> lore();
     }
 
     interface CommandSection {

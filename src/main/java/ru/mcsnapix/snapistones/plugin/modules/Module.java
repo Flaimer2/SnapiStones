@@ -23,10 +23,12 @@ public class Module {
     );
 
     public Module() {
+        System.out.println(plugin.getDataFolder().toPath());
+        System.out.println(pathSettings());
         moduleMap.forEach(this::enableModule);
     }
 
-    private void enableModule(ModuleEnum moduleEnum, IModule module) {
+    private void enableModule(ModuleEnum moduleEnum, IModule modstule) {
         module.load(plugin);
         plugin.log().info("§fМодуль §a{} §fзагружен", moduleEnum.name().toLowerCase());
     }
