@@ -28,12 +28,17 @@ import ru.mcsnapix.snapistones.plugin.utils.ItemUtil;
 import ru.mcsnapix.snapistones.plugin.utils.RegionUtil;
 import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
-@RequiredArgsConstructor
 public class BlockHandler implements Listener {
     @NonNull
     private final SnapiStones plugin;
-    private final MainConfig config = plugin.mainConfig().data();
-    private final Message message = plugin.message().data();
+    private final MainConfig config;
+    private final Message message;
+
+    public BlockHandler(@NonNull SnapiStones plugin) {
+        this.plugin = plugin;
+        config = plugin.mainConfig().data();
+        message = plugin.message().data();
+    }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {

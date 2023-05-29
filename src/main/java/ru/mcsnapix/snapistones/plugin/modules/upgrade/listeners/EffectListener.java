@@ -15,11 +15,12 @@ import ru.mcsnapix.snapistones.plugin.modules.upgrade.settings.UpgradeConfig;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 public class EffectListener implements Listener {
-    @NonNull
-    private final UpgradeModule module;
-    private final UpgradeConfig upgradeConfig = module.upgradeConfig().data();
+    private final UpgradeConfig upgradeConfig;
+
+    public EffectListener(@NonNull UpgradeModule module) {
+        upgradeConfig = module.upgradeConfig().data();
+    }
 
     @EventHandler
     public void onRegionEnter(RegionEnterEvent event) {

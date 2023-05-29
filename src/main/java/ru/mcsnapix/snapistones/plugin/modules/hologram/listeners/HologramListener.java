@@ -4,6 +4,8 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.DecentHologramsAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.holograms.HologramManager;
+import lombok.Builder;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,11 +18,13 @@ import ru.mcsnapix.snapistones.plugin.modules.hologram.settings.HologramConfig;
 import ru.mcsnapix.snapistones.plugin.modules.hologram.settings.HologramOptions;
 import ru.mcsnapix.snapistones.plugin.utils.FormatterUtil;
 
-@RequiredArgsConstructor
 public class HologramListener implements Listener {
-    private final HologramModule hologramModule;
+    private final HologramConfig hologramConfig;
     private final HologramManager hm = DecentHologramsAPI.get().getHologramManager();
-    private final HologramConfig hologramConfig = hologramModule.hologramConfig().data();
+
+    public HologramListener(@NonNull HologramModule hologramModule) {
+        hologramConfig = hologramModule.hologramConfig().data();
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onRegionCreate(RegionCreateEvent event) {

@@ -1,8 +1,7 @@
 package ru.mcsnapix.snapistones.plugin.modules.home;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.NonNull;
 import org.bukkit.Location;
 import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
 import ru.mcsnapix.snapistones.plugin.database.Database;
@@ -11,12 +10,18 @@ import ru.mcsnapix.snapistones.plugin.modules.home.settings.HomeConfig;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class HomeManager {
-    private final HomeModule module;
-    private final SnapPlayer player;
-    private final Database database = new Database(player.region());
-    private final HomeConfig homeConfig = module.homeConfig().data();
+    @NonNull private final HomeModule module;
+    @NonNull private final SnapPlayer player;
+    private final Database database;
+    private final HomeConfig homeConfig;
+
+    protected HomeManager(@NonNull HomeModule module, @NonNull SnapPlayer player) {
+        this.module = module;
+        this.player = player;
+        database = new Database(player.region());
+        homeConfig = module.homeConfig().data();
+    }
 
     private Location location() {
         return database.location();

@@ -10,64 +10,40 @@ import ru.mcsnapix.snapistones.plugin.utils.Utils;
 @UtilityClass
 public class SnapAPI {
     public SnapPlayer player(Player player) {
-        return SnapPlayer.builder()
+        return new SnapPlayer(player, PlaceholderParser.builder()
                 .player(player)
-                .placeholderParser(
-                        PlaceholderParser.builder()
-                                .player(player)
-                                .build()
-                ).build();
+                .build());
     }
 
     public SnapPlayer player(Player player, ProtectedRegion region) {
-        return SnapPlayer.builder()
+        return new SnapPlayer(player, region, PlaceholderParser.builder()
                 .player(player)
                 .region(region)
-                .placeholderParser(
-                        PlaceholderParser.builder()
-                                .player(player)
-                                .region(region)
-                                .build()
-                ).build();
+                .build());
     }
 
     public SnapPlayer player(Player player, ProtectedRegion region, ProtectedBlock protectedBlock) {
-        return SnapPlayer.builder()
+        return new SnapPlayer(player, region, PlaceholderParser.builder()
                 .player(player)
                 .region(region)
-                .placeholderParser(
-                        PlaceholderParser.builder()
-                                .player(player)
-                                .region(region)
-                                .protectedBlock(protectedBlock)
-                                .build()
-                ).build();
+                .protectedBlock(protectedBlock)
+                .build());
     }
 
-    public SnapPlayer player(Player player, ProtectedRegion region, ProtectedBlock protectedBlock, OfflinePlayer anotherPlayer) {
-        return SnapPlayer.builder()
+    public SnapPlayer player(Player player, ProtectedRegion region, ProtectedBlock protectedBlock, String anotherName) {
+        return new SnapPlayer(player, region, PlaceholderParser.builder()
                 .player(player)
                 .region(region)
-                .placeholderParser(
-                        PlaceholderParser.builder()
-                                .player(player)
-                                .region(region)
-                                .protectedBlock(protectedBlock)
-                                .anotherPlayer(anotherPlayer)
-                                .build()
-                ).build();
+                .protectedBlock(protectedBlock)
+                .anotherPlayer(Utils.offlinePlayer(anotherName))
+                .build());
     }
 
     public SnapPlayer player(Player player, ProtectedRegion region, String anotherName) {
-        return SnapPlayer.builder()
+        return new SnapPlayer(player, region, PlaceholderParser.builder()
                 .player(player)
                 .region(region)
-                .placeholderParser(
-                        PlaceholderParser.builder()
-                                .player(player)
-                                .region(region)
-                                .anotherPlayer(Utils.offlinePlayer(anotherName))
-                                .build()
-                ).build();
+                .anotherPlayer(Utils.offlinePlayer(anotherName))
+                .build());
     }
 }

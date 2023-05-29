@@ -61,12 +61,12 @@ public class PlayerHandler implements Listener {
 
         if (isOnABase.containsKey(player)) {
             if (!snapPlayer.hasPlayerInRegion(region)) {
-                plugin.callEvent(new RegionLeaveEvent(snapPlayer, isOnABase.get(player)));
+                plugin.callEvent(new RegionLeaveEvent(snapPlayer, region));
                 isOnABase.remove(player);
                 return;
             }
             if (region != isOnABase.get(player)) {
-                plugin.callEvent(new RegionLeaveEvent(snapPlayer, isOnABase.get(player)));
+                plugin.callEvent(new RegionLeaveEvent(snapPlayer, region));
                 plugin.callEvent(new RegionEnterEvent(snapPlayer, region));
                 isOnABase.replace(player, region);
             }

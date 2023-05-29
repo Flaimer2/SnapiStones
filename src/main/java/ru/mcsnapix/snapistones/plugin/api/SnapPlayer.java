@@ -22,18 +22,35 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Builder(access = AccessLevel.PACKAGE)
 @Accessors(fluent = true)
 @Getter
 public class SnapPlayer {
     private final SnapiStones plugin = SnapiStones.get();
-    @NonNull
-    private final Player player;
-    @NonNull
-    private final PlaceholderParser placeholderParser;
-    private final RegionUtil regionUtil = new RegionUtil(player);
-    private final LocalPlayer localPlayer = plugin.worldGuard().wrapPlayer(player);
+
+    @NonNull private final Player player;
+    @NonNull private final PlaceholderParser placeholderParser;
     private ProtectedRegion region;
+
+    private final LocalPlayer localPlayer;
+    private final RegionUtil regionUtil;
+
+
+    protected SnapPlayer(@NonNull Player player, @NonNull PlaceholderParser placeholderParser) {
+        this.player = player;
+        this.placeholderParser = placeholderParser;
+
+        localPlayer = plugin.worldGuard().wrapPlayer(player);
+        regionUtil = new RegionUtil(player);
+    }
+
+    protected SnapPlayer(@NonNull Player player,  @NonNull ProtectedRegion region, @NonNull PlaceholderParser placeholderParser) {
+        this.player = player;
+        this.region = region;
+        this.placeholderParser = placeholderParser;
+
+        localPlayer = plugin.worldGuard().wrapPlayer(player);
+        regionUtil = new RegionUtil(player);
+    }
 
     public void sendMessage(@NonNull String message) {
         String parsedMessage = placeholderParser.parseString(ChatColor.translateAlternateColorCodes('&', message));

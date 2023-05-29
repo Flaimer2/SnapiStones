@@ -15,9 +15,9 @@ import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
 public class RegionLeaveEvent extends Event {
     private static final HandlerList HANDLERS_LIST = new HandlerList();
     @NonNull
-    private final ProtectedRegion region;
-    @NonNull
     private SnapPlayer player;
+    @NonNull
+    private final ProtectedRegion region;
 
     public static HandlerList getHandlerList() {
         return HANDLERS_LIST;

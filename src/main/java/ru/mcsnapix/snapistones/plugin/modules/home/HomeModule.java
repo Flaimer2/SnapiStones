@@ -1,8 +1,12 @@
 package ru.mcsnapix.snapistones.plugin.modules.home;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
+import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
+import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
 import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
 import ru.mcsnapix.snapistones.plugin.modules.home.settings.HomeConfig;
 import ru.mcsnapix.snapistones.plugin.modules.interfaces.IModule;
@@ -33,5 +37,10 @@ public class HomeModule implements IModule {
 
     public HomeManager homeManager(SnapPlayer player) {
         return new HomeManager(this, player);
+    }
+
+    public HomeManager homeManager(Player player, ProtectedRegion region) {
+        SnapPlayer snapPlayer = SnapAPI.player(player, region);
+        return new HomeManager(this, snapPlayer);
     }
 }

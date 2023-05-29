@@ -60,3 +60,31 @@ val libraryPackage = "ru.mcsnapix.snapistones.libraries"
 fun com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.relocateDependency(pkg: String) {
     relocate(pkg, "$libraryPackage.$pkg")
 }
+
+tasks {
+    shadowJar {
+        relocateDependency("space.arim.dazzleconf")
+        relocateDependency("org.yaml")
+        relocateDependency("com.zaxxer")
+        relocateDependency("co.aikar.idb")
+    }
+
+    compileJava {
+        options.encoding = Charsets.UTF_8.name()
+        options.release.set(11)
+        options.compilerArgs.add("-parameters")
+    }
+
+    processResources {
+        filteringCharset = Charsets.UTF_8.name()
+    }
+}
+
+bukkit {
+    name = "SnapiStones"
+    version = "0.9"
+    main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
+    description = "Плагин на блоки привата"
+    website = "https://mcsnapix.ru"
+    authors = listOf("SnapiX", "Flaimer")
+}
