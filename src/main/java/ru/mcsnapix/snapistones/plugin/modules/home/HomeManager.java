@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HomeManager {
-    @NonNull private final HomeModule module;
-    @NonNull private final SnapPlayer player;
+    @NonNull
+    private final HomeModule module;
+    @NonNull
+    private final SnapPlayer player;
     private final Database database;
     private final HomeConfig homeConfig;
 

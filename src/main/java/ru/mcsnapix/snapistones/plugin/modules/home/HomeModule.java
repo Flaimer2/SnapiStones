@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
 import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
 import ru.mcsnapix.snapistones.plugin.modules.home.settings.HomeConfig;

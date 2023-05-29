@@ -10,8 +10,6 @@ import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.database.Database;
 import ru.mcsnapix.snapistones.plugin.modules.home.HomeManager;
-import ru.mcsnapix.snapistones.plugin.modules.home.HomeModule;
-import ru.mcsnapix.snapistones.plugin.modules.upgrade.UpgradeModule;
 
 import java.util.Arrays;
 import java.util.List;

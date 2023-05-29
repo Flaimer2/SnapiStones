@@ -2,7 +2,6 @@ package ru.mcsnapix.snapistones.plugin.api;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.experimental.UtilityClass;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.utils.PlaceholderParser;
 import ru.mcsnapix.snapistones.plugin.utils.Utils;

@@ -2,7 +2,6 @@ package ru.mcsnapix.snapistones.plugin.modules.upgrade.listeners;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;

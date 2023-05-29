@@ -46,7 +46,7 @@ public class RegionListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void RegionRemoveCreate(RegionRemoveEvent event) {
+    public void onRegionRemove(RegionRemoveEvent event) {
         ProtectedRegion region = event.region();
         SnapPlayer player = event.player();
         ProtectedBlock block = event.protectedBlock();

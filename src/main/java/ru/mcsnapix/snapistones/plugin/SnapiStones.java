@@ -32,7 +32,6 @@ import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
 @Accessors(fluent = true)

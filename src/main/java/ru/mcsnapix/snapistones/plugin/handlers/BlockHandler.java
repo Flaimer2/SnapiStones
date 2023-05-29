@@ -6,7 +6,6 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;

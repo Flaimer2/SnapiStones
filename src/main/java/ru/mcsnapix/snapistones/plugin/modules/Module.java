@@ -28,7 +28,7 @@ public class Module {
 
     private void enableModule(ModuleEnum moduleEnum, IModule module) {
         module.load(plugin);
-        plugin.getLogger().info("§fМодуль §a" + moduleEnum.name().toLowerCase() + " §fзагружен");
+        plugin.log().info("§fМодуль §a{} §fзагружен", moduleEnum.name().toLowerCase());
     }
 
     public void reloadModules() {
@@ -37,7 +37,7 @@ public class Module {
 
     private void reloadModule(ModuleEnum moduleEnum, IModule module) {
         module.reload();
-        plugin.getLogger().info("§fМодуль §a" + moduleEnum.name().toLowerCase() + " §fперезагружен");
+        plugin.log().info("§fМодуль §a{} §fперезагружен", moduleEnum.name().toLowerCase());
     }
 
     private IModule getModule(ModuleEnum moduleEnum) {

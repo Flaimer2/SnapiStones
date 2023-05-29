@@ -2,8 +2,6 @@ package ru.mcsnapix.snapistones.plugin.api;
 
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -27,12 +25,13 @@ import java.util.stream.Collectors;
 public class SnapPlayer {
     private final SnapiStones plugin = SnapiStones.get();
 
-    @NonNull private final Player player;
-    @NonNull private final PlaceholderParser placeholderParser;
-    private ProtectedRegion region;
-
+    @NonNull
+    private final Player player;
+    @NonNull
+    private final PlaceholderParser placeholderParser;
     private final LocalPlayer localPlayer;
     private final RegionUtil regionUtil;
+    private ProtectedRegion region;
 
     protected SnapPlayer(@NonNull Player player, @NonNull PlaceholderParser placeholderParser) {
         this.player = player;
@@ -42,7 +41,7 @@ public class SnapPlayer {
         regionUtil = new RegionUtil(player);
     }
 
-    protected SnapPlayer(@NonNull Player player,  @NonNull ProtectedRegion region, @NonNull PlaceholderParser placeholderParser) {
+    protected SnapPlayer(@NonNull Player player, @NonNull ProtectedRegion region, @NonNull PlaceholderParser placeholderParser) {
         this.player = player;
         this.region = region;
         this.placeholderParser = placeholderParser;
