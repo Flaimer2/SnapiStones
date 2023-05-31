@@ -39,13 +39,10 @@ import java.util.Map;
 public final class SnapiStones extends JavaPlugin {
     private static SnapiStones plugin;
     private final EnumMap<XMaterial, ProtectedBlock> protectedBlockMap = new EnumMap<>(XMaterial.class);
-    private final ConfigurationOptions options = new ConfigurationOptions.Builder()
-            .sorter(new AnnotationBasedSorter())
-            .setCreateSingleElementCollections(true)
-            .build();
     private final Logger log = getSLF4JLogger();
     private Module module;
     private Commands commands;
+    private ConfigurationOptions options;
     private BukkitAudiences adventure;
     private Configuration<MainConfig> mainConfig;
     private Configuration<MySQLConfig> mysqlConfig;
@@ -59,13 +56,13 @@ public final class SnapiStones extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        PluginManager pluginManager = getServer().getPluginManager();
         plugin = this;
+        PluginManager pluginManager = getServer().getPluginManager();
         loadWorldGuard();
         loadConfigs();
         addProtectedBlocksFromConfig();
         commands = new Commands();
-        adventure = BukkitAudiences.create(this);
+        adventure = BukkitAudiences.create(plugin);
         enableMySQL();
         registerHandlers(pluginManager);
         registerListeners(pluginManager);
@@ -97,6 +94,10 @@ public final class SnapiStones extends JavaPlugin {
     }
 
     private void loadConfigs() {
+        options = new ConfigurationOptions.Builder()
+                .sorter(new AnnotationBasedSorter())
+                .setCreateSingleElementCollections(true)
+                .build();
         mainConfig = Configuration.create(plugin, "config.yml", MainConfig.class, options);
         mysqlConfig = Configuration.create(plugin, "mysql.yml", MySQLConfig.class, options);
         message = Configuration.create(plugin, "message.yml", Message.class, options);

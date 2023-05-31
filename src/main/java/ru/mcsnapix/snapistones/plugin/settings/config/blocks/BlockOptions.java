@@ -31,9 +31,14 @@ public interface BlockOptions {
             }
         };
     }
+
     String symbol();
+
     int radius();
+
     String placeSound();
+
     String breakSound();
+
     @SubSection PlaceEffect placeEffect();
 }

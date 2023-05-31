@@ -7,12 +7,15 @@ public interface PlaceEffect {
             public String name() {
                 return name;
             }
+
             @Override
             public int amount() {
                 return amount;
             }
         };
     }
+
     String name();
+
     int amount();
 }

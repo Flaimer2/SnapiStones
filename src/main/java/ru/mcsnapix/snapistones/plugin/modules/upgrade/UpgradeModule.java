@@ -1,25 +1,31 @@
 package ru.mcsnapix.snapistones.plugin.modules.upgrade;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
+import ru.mcsnapix.snapistones.plugin.modules.Module;
 import ru.mcsnapix.snapistones.plugin.modules.interfaces.IModule;
 import ru.mcsnapix.snapistones.plugin.modules.upgrade.listeners.EffectListener;
 import ru.mcsnapix.snapistones.plugin.modules.upgrade.settings.UpgradeConfig;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;
 
+@RequiredArgsConstructor
 @Accessors(fluent = true)
 @Getter
 public class UpgradeModule implements IModule {
-    private SnapiStones plugin;
+    @NonNull
+    private Module module;
     private Configuration<UpgradeConfig> upgradeConfig;
 
     @Override
-    public void load(SnapiStones plugin) {
-        this.plugin = plugin;
+    public void load() {
+        SnapiStones plugin = module.plugin();
+
         upgradeConfig = Configuration.create(
                 plugin,
-                plugin.module().pathSettings(),
+                module.pathSettings(),
                 "config.yml",
                 UpgradeConfig.class,
                 plugin.options()

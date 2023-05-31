@@ -12,6 +12,7 @@ import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlOptions;
 import space.arim.dazzleconf.helper.ConfigurationHelper;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -60,23 +61,21 @@ public final class Configuration<C> {
     public void reloadConfig() {
         try {
             configData = configHelper.reloadConfigData();
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+
         } catch (ConfigFormatSyntaxException ex) {
-            loadDefault();
+            configData = configHelper.getFactory().loadDefaults();
             logger.error("The yaml syntax in your configuration is invalid. "
-                    + "Check your YAML syntax with a tool such as https://yaml-online-parser.appspot.com/", ex);
+                    + "Check your YAML syntax with a tool such as https://yaml-online-parser.appspot.com/");
+            ex.printStackTrace();
 
         } catch (InvalidConfigException ex) {
-            loadDefault();
+            configData = configHelper.getFactory().loadDefaults();
             logger.error("One of the values in your configuration is not valid. "
-                    + "Check to make sure you have specified the right data types.", ex);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                    + "Check to make sure you have specified the right data types.");
+            ex.printStackTrace();
         }
-    }
-
-    private void loadDefault() {
-        logger.error("Failed to load configuration! Loading defaults!");
-        this.configData = configHelper.getFactory().loadDefaults();
     }
 
     public C data() {

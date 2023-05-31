@@ -2,27 +2,32 @@ package ru.mcsnapix.snapistones.plugin.modules.home;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
 import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
+import ru.mcsnapix.snapistones.plugin.modules.Module;
 import ru.mcsnapix.snapistones.plugin.modules.home.settings.HomeConfig;
 import ru.mcsnapix.snapistones.plugin.modules.interfaces.IModule;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;
 
+@RequiredArgsConstructor
 @Accessors(fluent = true)
 @Getter
 public class HomeModule implements IModule {
-    private SnapiStones plugin;
+    @NonNull
+    private Module module;
     private Configuration<HomeConfig> homeConfig;
 
     @Override
-    public void load(SnapiStones plugin) {
-        this.plugin = plugin;
+    public void load() {
+        SnapiStones plugin = module.plugin();
         homeConfig = Configuration.create(
                 plugin,
-                plugin.module().pathSettings(),
+                module.pathSettings(),
                 "config.yml",
                 HomeConfig.class,
                 plugin.options()
