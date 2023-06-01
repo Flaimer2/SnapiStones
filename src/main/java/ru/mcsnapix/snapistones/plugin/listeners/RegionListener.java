@@ -1,7 +1,6 @@
 package ru.mcsnapix.snapistones.plugin.listeners;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -13,7 +12,6 @@ import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionCreateEvent;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionRemoveEvent;
-import ru.mcsnapix.snapistones.plugin.database.Database;
 import ru.mcsnapix.snapistones.plugin.settings.config.blocks.BlockOptions;
 import ru.mcsnapix.snapistones.plugin.settings.message.Message;
 import ru.mcsnapix.snapistones.plugin.utils.BlockUtil;
@@ -27,7 +25,6 @@ public class RegionListener implements Listener {
 
     @EventHandler
     public void onRegionCreate(RegionCreateEvent event) {
-        ProtectedRegion region = event.region();
         SnapPlayer player = event.player();
         ProtectedBlock block = event.protectedBlock();
         Location location = event.location();
@@ -45,7 +42,6 @@ public class RegionListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onRegionRemove(RegionRemoveEvent event) {
-        ProtectedRegion region = event.region();
         SnapPlayer player = event.player();
         ProtectedBlock block = event.protectedBlock();
         Location location = event.location();

@@ -5,10 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @UtilityClass
 public class FormatterUtil {
@@ -30,7 +27,7 @@ public class FormatterUtil {
     }
 
     public List<String> formatList(List<String> list, String format) {
-        if (list == null) return null;
+        if (list == null || list.isEmpty()) return Collections.emptyList();
 
         List<String> formatList = new ArrayList<>();
 

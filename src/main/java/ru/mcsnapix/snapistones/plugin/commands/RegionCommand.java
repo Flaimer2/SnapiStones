@@ -203,11 +203,7 @@ public class RegionCommand extends BaseCommand {
         UpgradeConfig upgradeConfig = plugin.module().upgrade().upgradeConfig().data();
 
         int maxMembers = upgradeConfig.limitMember().get(database.maxMembers());
-        List<String> members = database.members();
-        int member = 0;
-        if (members != null) {
-            member = members.size();
-        }
+        int member = database.members().size();
 
         if (maxMembers <= member) {
             snapPlayer.sendMessage(upgradeConfig.message().limit().addMember());
@@ -276,11 +272,7 @@ public class RegionCommand extends BaseCommand {
         UpgradeConfig upgradeConfig = plugin.module().upgrade().upgradeConfig().data();
 
         int maxOwners = upgradeConfig.limitOwner().get(database.maxOwners());
-        List<String> owners = database.owners();
-        int owner = 0;
-        if (owners != null) {
-            owner = owners.size();
-        }
+        int owner = database.owners().size();
 
         if (maxOwners <= owner) {
             snapPlayer.sendMessage(upgradeConfig.message().limit().addOwner());
@@ -325,7 +317,7 @@ public class RegionCommand extends BaseCommand {
         HomeConfig config = home.homeConfig().data();
         SnapPlayer snapPlayer = SnapAPI.player(player);
 
-        List<ProtectedRegion> regionList = snapPlayer.memberRegions().stream().filter(r -> new Database(r).hasRegion()).collect(Collectors.toList());;
+        List<ProtectedRegion> regionList = snapPlayer.memberRegions().stream().filter(r -> new Database(r).hasRegion()).collect(Collectors.toList());
         int count = regionList.size();
 
         if (count == 1) {

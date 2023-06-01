@@ -65,7 +65,9 @@ public class BlockHandler implements Listener {
         Location location = block.getLocation();
 
         World world = location.getWorld();
-        double blockX = location.getX(), blockY = location.getY(), blockZ = location.getZ();
+        double blockX = location.getX();
+        double blockY = location.getY();
+        double blockZ = location.getZ();
 
         RegionUtil regionUtil = new RegionUtil(world);
         RegionManager rm = regionUtil.regionManager();

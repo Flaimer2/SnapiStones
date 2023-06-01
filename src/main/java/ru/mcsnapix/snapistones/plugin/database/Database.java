@@ -10,6 +10,7 @@ import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
 import ru.mcsnapix.snapistones.plugin.serializers.LocationSerializer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Database {
@@ -50,7 +51,7 @@ public class Database {
 
     public List<String> getColumnAsList(Column column) {
         String serializedList = getColumnAsString(column);
-        if (serializedList == null) return null;
+        if (serializedList == null) return Collections.emptyList();
         return ListSerializer.deserialize(serializedList);
     }
 
