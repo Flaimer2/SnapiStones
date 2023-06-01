@@ -62,7 +62,7 @@ public final class SnapiStones extends JavaPlugin {
         loadConfigs();
         addProtectedBlocksFromConfig();
         commands = new Commands();
-        adventure = BukkitAudiences.create(plugin);
+        adventure = BukkitAudiences.create(this);
         enableMySQL();
         registerHandlers(pluginManager);
         registerListeners(pluginManager);

@@ -41,8 +41,6 @@ public class RegionListener implements Listener {
                 .location(location)
                 .count(blockOptions.placeEffect().amount()).spawn();
         player.sendMessage(message.protectedArea());
-        Database database = new Database(region);
-        database.createRegion(player.name());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -62,7 +60,5 @@ public class RegionListener implements Listener {
                         )
                 );
         player.sendMessage(message.protectedBlockBroken());
-        Database database = new Database(region);
-        database.removeRegion();
     }
 }

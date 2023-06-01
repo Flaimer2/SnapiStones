@@ -56,6 +56,10 @@ public class PlayerHandler implements Listener {
         RegionUtil regionUtil = new RegionUtil(player);
         Location location = player.getLocation();
         ProtectedRegion region = regionUtil.getRegion(location);
+        if (region == null) {
+            isOnABase.remove(player);
+            return;
+        }
         ProtectedBlock protectedBlock = BlockUtil.protectedBlock(regionUtil.getCenter(region));
         SnapPlayer snapPlayer = SnapAPI.player(player, region, protectedBlock);
 

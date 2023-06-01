@@ -3,7 +3,6 @@ package ru.mcsnapix.snapistones.plugin.database;
 import co.aikar.idb.DB;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
@@ -13,12 +12,16 @@ import ru.mcsnapix.snapistones.plugin.serializers.LocationSerializer;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class Database {
     private final SnapiStones plugin = SnapiStones.get();
     @NonNull
-    private ProtectedRegion region;
-    private final String regionId = region.getId();
+    private final ProtectedRegion region;
+    private final String regionId;
+
+    public Database(@NonNull ProtectedRegion region) {
+        this.region = region;
+        regionId = region.getId();
+    }
 
     public void createRegion(String owner) {
         DB.executeUpdateAsync("INSERT INTO regions (region_name, owners_name, creation_date) VALUES (?,?,UNIX_TIMESTAMP())",
@@ -37,16 +40,17 @@ public class Database {
 
     @SneakyThrows
     private int getColumnAsInt(Column column) {
-        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", column.getName(), regionId);
+        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", regionId);
     }
 
     @SneakyThrows
     private String getColumnAsString(Column column) {
-        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", column.getName(), regionId);
+        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", regionId);
     }
 
     public List<String> getColumnAsList(Column column) {
         String serializedList = getColumnAsString(column);
+        if (serializedList == null) return null;
         return ListSerializer.deserialize(serializedList);
     }
 
@@ -55,12 +59,20 @@ public class Database {
         DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, regionId);
     }
 
+    @SneakyThrows
+    private void updateColumn(Column column, int value) {
+        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, regionId);
+    }
+
     public List<String> owners() {
         return getColumnAsList(Column.OWNERS);
     }
 
     public boolean isOwner(String owner) {
-        return owners().contains(owner);
+        List<String> owners = owners();
+
+        if (owners == null) return false;
+        return owners.contains(owner);
     }
 
     public void addOwner(String name) {
@@ -76,7 +88,10 @@ public class Database {
     }
 
     public boolean isMember(String member) {
-        return members().contains(member);
+        List<String> members = members();
+
+        if (members == null) return false;
+        return members.contains(member);
     }
 
     public void addMember(String name) {
@@ -88,11 +103,12 @@ public class Database {
     }
 
     public String date() {
-        return getColumnAsString(Column.DATE);
+        return Integer.toString(getColumnAsInt(Column.DATE));
     }
 
     public Location location() {
         String serializedLocation = getColumnAsString(Column.LOCATION);
+        if (serializedLocation == null) return null;
         return LocationSerializer.deserialize(serializedLocation);
     }
 
@@ -120,26 +136,26 @@ public class Database {
         return getColumnAsInt(Column.MAX_OWNERS);
     }
 
-    public void maxOwners(String value) {
+    public void maxOwners(int value) {
         updateColumn(Column.MAX_OWNERS, value);
     }
 
     public void addMaxOwners(int amount) {
         int count = maxOwners() + amount;
-        updateColumn(Column.MAX_OWNERS, Integer.toString(count));
+        updateColumn(Column.MAX_OWNERS, count);
     }
 
     public int maxMembers() {
         return getColumnAsInt(Column.MAX_MEMBERS);
     }
 
-    public void maxMembers(String value) {
+    public void maxMembers(int value) {
         updateColumn(Column.MAX_MEMBERS, value);
     }
 
     public void addMaxMembers(int amount) {
         int count = maxMembers() + amount;
-        updateColumn(Column.MAX_MEMBERS, Integer.toString(count));
+        updateColumn(Column.MAX_MEMBERS, count);
     }
 
     private void changeList(List<String> list, Column column, String name, boolean add) {

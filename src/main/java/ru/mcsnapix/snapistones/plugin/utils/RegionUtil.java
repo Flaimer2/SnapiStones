@@ -4,6 +4,7 @@ import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -45,6 +46,9 @@ public class RegionUtil {
     }
 
     public Location getCenter(ProtectedRegion region) {
+        if (region instanceof GlobalProtectedRegion) {
+            return null;
+        }
         return getCenter(region.getMinimumPoint(), region.getMaximumPoint());
     }
 

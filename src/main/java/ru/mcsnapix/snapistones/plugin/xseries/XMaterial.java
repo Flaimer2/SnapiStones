@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * Material Source Code: https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/Material.java
  * XMaterial v1: https://www.spigotmc.org/threads/329630/
  * <p>
- * This class will throw a "unsupported material" error if someone tries to use an item with an invalid data value which can only happen in 1.12 servers and below or when the
+ * This class will throw an "unsupported material" error if someone tries to use an item with an invalid data value which can only happen in 1.12 servers and below or when the
  * utility is missing a new material in that specific version.
  * To get an invalid item, (aka <a href="https://minecraft.fandom.com/wiki/Missing_Texture_Block">Missing Texture Block</a>) you can use the command
  * <b>/give @p minecraft:dirt 1 10</b> where 1 is the item amount, and 10 is the data value. The material {@link #DIRT} with a data value of {@code 10} doesn't exist.
@@ -1920,9 +1920,9 @@ public enum XMaterial {
             if (!appendUnderline && count != 0 && (ch == '-' || ch == ' ' || ch == '_') && chs[count] != '_')
                 appendUnderline = true;
             else {
-                boolean number = false;
+                boolean number = (ch >= '0' && ch <= '9');
                 // Old materials have numbers in them.
-                if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (number = (ch >= '0' && ch <= '9'))) {
+                if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || number) {
                     if (appendUnderline) {
                         chs[count++] = '_';
                         appendUnderline = false;
@@ -2032,32 +2032,46 @@ public enum XMaterial {
 
         for (String comp : materials) {
             String checker = comp.toUpperCase(Locale.ENGLISH);
-            if (checker.startsWith("CONTAINS:")) {
-                comp = format(checker.substring(9));
-                if (name.contains(comp)) return true;
-                continue;
-            }
-            if (checker.startsWith("REGEX:")) {
-                comp = comp.substring(6);
-                Pattern pattern = CACHED_REGEX.getIfPresent(comp);
-                if (pattern == null) {
-                    try {
-                        pattern = Pattern.compile(comp);
-                        CACHED_REGEX.put(comp, pattern);
-                    } catch (PatternSyntaxException ex) {
-                        SnapiStones.get().log().error("Ошибка regex " + ex);
-                    }
-                }
-                if (pattern != null && pattern.matcher(name).matches()) return true;
-                continue;
-            }
 
-            // Direct Object Equals
-            Optional<XMaterial> xMat = matchXMaterial(comp);
-            if (xMat.isPresent() && xMat.get() == this) return true;
+            if (processContains(name, checker)) return true;
+            if (processRegex(name, checker)) return true;
+            if (processDirectObjectEquals(checker)) return true;
         }
         return false;
     }
+
+    private boolean processContains(String name, String checker) {
+        if (checker.startsWith("CONTAINS:")) {
+            String comp = format(checker.substring(9));
+            return name.contains(comp);
+        }
+        return false;
+    }
+
+    private boolean processRegex(String name, String checker) {
+        if (checker.startsWith("REGEX:")) {
+            String comp = checker.substring(6);
+            Pattern pattern = CACHED_REGEX.getIfPresent(comp);
+
+            if (pattern == null) {
+                try {
+                    pattern = Pattern.compile(comp);
+                    CACHED_REGEX.put(comp, pattern);
+                } catch (PatternSyntaxException ex) {
+                    SnapiStones.get().log().error("Error syntax regex", ex);
+                }
+            }
+
+            return pattern != null && pattern.matcher(name).matches();
+        }
+        return false;
+    }
+
+    private boolean processDirectObjectEquals(String checker) {
+        Optional<XMaterial> xMat = matchXMaterial(checker);
+        return xMat.isPresent() && xMat.get() == this;
+    }
+
 
     /**
      * Sets the {@link Material} (and data value on older versions) of an item.
@@ -2273,7 +2287,7 @@ public enum XMaterial {
     private static final class Data {
         /**
          * The current version of the server in the form of a major version.
-         * If the static initialization for this fails, you know something's wrong with the server software.
+         * If the static initialization for fails, you know something's wrong with the server software.
          *
          * @since 1.0.0
          */

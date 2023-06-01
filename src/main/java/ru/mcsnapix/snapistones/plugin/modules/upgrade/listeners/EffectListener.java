@@ -27,6 +27,10 @@ public class EffectListener implements Listener {
         ProtectedRegion region = event.region();
         Database database = new Database(region);
 
+        if (!database.hasRegion()) {
+            return;
+        }
+
         if (!database.hasActiveEffects()) {
             return;
         }
@@ -43,6 +47,10 @@ public class EffectListener implements Listener {
         SnapPlayer player = event.player();
         ProtectedRegion region = event.region();
         Database database = new Database(region);
+
+        if (!database.hasRegion()) {
+            return;
+        }
 
         for (PotionEffect effect : player.activePotionEffects()) {
             for (String s : database.activeEffects()) {

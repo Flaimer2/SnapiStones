@@ -12,14 +12,11 @@ import java.util.stream.Collectors;
 
 public class HomeManager {
     @NonNull
-    private final HomeModule module;
-    @NonNull
     private final SnapPlayer player;
     private final Database database;
     private final HomeConfig homeConfig;
 
     protected HomeManager(@NonNull HomeModule module, @NonNull SnapPlayer player) {
-        this.module = module;
         this.player = player;
         database = new Database(player.region());
         homeConfig = module.homeConfig().data();

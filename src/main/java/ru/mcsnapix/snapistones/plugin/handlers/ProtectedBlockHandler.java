@@ -2,6 +2,8 @@ package ru.mcsnapix.snapistones.plugin.handlers;
 
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
@@ -30,7 +32,6 @@ import ru.mcsnapix.snapistones.plugin.modules.upgrade.settings.UpgradeConfig;
 import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
 import ru.mcsnapix.snapistones.plugin.utils.BlockUtil;
 import ru.mcsnapix.snapistones.plugin.utils.FormatterUtil;
-import ru.mcsnapix.snapistones.plugin.utils.ItemUtil;
 import ru.mcsnapix.snapistones.plugin.utils.RegionUtil;
 import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
@@ -116,6 +117,9 @@ public class ProtectedBlockHandler implements Listener {
         block.setType(Material.AIR);
         // ! Module Upgrade
         Database database = new Database(region);
+        List<String> effects = database.effects();
+        int maxOwners = database.maxOwners();
+        int maxMembers = database.maxMembers();
 
         UpgradeModule upgradeModule = plugin.module().upgrade();
         UpgradeConfig upgradeConfig = upgradeModule.upgradeConfig().data();
@@ -126,22 +130,34 @@ public class ProtectedBlockHandler implements Listener {
         itemMeta.setDisplayName(itemConfig.name());
 
         ReplacedList lore = new ReplacedList(itemConfig.lore());
-        ReplacedList effectBought = new ReplacedList(itemConfig.effectBought());
-        effectBought = effectBought.replace("%effects%", FormatterUtil.formatList(database.effects(), itemConfig.formatListEffect()));
-        lore = lore.replace("%effectBought%", effectBought);
-        lore = lore.replace("%maxOwners%", itemConfig.maxOwners().replace("%amount%", Integer.toString(database.maxOwners())));
-        lore = lore.replace("%maxMembers%", itemConfig.maxMembers().replace("%amount%", Integer.toString(database.maxMembers())));
+
+        if (effects != null) {
+            ReplacedList effectBought = new ReplacedList(itemConfig.effectBought());
+            effectBought = effectBought.replace("%effects%", FormatterUtil.formatList(effects, itemConfig.formatListEffect()));
+            lore = lore.replace("%effectBought%", effectBought);
+        } else {
+            lore = lore.replace("%effectBought%", (List<String>) null);
+        }
+
+        lore = lore.replace("%maxOwners%", itemConfig.maxOwners().replace("%amount%", Integer.toString(maxOwners)));
+        lore = lore.replace("%maxMembers%", itemConfig.maxMembers().replace("%amount%", Integer.toString(maxMembers)));
 
         itemMeta.setLore(lore);
         itemDrop.setItemMeta(itemMeta);
-        itemDrop = ItemUtil.setNBTTag(itemDrop, "effect", ListSerializer.serialize(database.effects()));
-        itemDrop = ItemUtil.setNBTTag(itemDrop, "maxOwner", Integer.toString(database.maxOwners()));
-        itemDrop = ItemUtil.setNBTTag(itemDrop, "maxMember", Integer.toString(database.maxMembers()));
 
-        block.getWorld().dropItem(block.getLocation(), itemDrop);
+        NBTItem nbti = new NBTItem(itemDrop);
+
+        if (effects != null) {
+            nbti.setString("effect", ListSerializer.serialize(effects));
+        }
+        nbti.setString("maxOwner", Integer.toString(maxOwners));
+        nbti.setString("maxMember", Integer.toString(maxMembers));
+
+        block.getWorld().dropItem(block.getLocation(), nbti.getItem());
 
         plugin.callEvent(new RegionRemoveEvent(snapPlayer, region, protectedBlock, location));
         regionManager.removeRegion(region.getId());
+        database.removeRegion();
     }
 
     @EventHandler

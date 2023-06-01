@@ -6,6 +6,7 @@ import lombok.NonNull;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+import ru.mcsnapix.snapistones.plugin.FakeProtectedRegion;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.database.Database;
@@ -39,18 +40,24 @@ public class PlaceholderParser {
         }
 
         if (region != null) {
-            value = value.replace("%region_id%", region.getId());
-            value = value.replace("%region_owners%", FormatterUtil.formatPlayerList(region.getOwners().getUniqueIds()));
-            value = value.replace("%region_members%", FormatterUtil.formatPlayerList(region.getMembers().getUniqueIds()));
-            value = value.replace("%region_owners_size%", Integer.toString(region.getOwners().size()));
-            value = value.replace("%region_members_size%", Integer.toString(region.getMembers().size()));
-            Database database = new Database(region);
-            if (database.hasRegion()) {
-                HomeManager home = plugin.module().home().homeManager(player, region);
-                value = value.replace("%region_creation_date%", database.date());
-                value = value.replace("%region_max_owners%", Integer.toString(database.maxOwners()));
-                value = value.replace("%region_max_members%", Integer.toString(database.maxMembers()));
-                value = value.replace("%region_has_home%", FormatterUtil.formatPlaceBoolean(home.hasLocation()));
+            if (region instanceof FakeProtectedRegion) {
+                FakeProtectedRegion fakeRegion = (FakeProtectedRegion) region;
+                value = value.replace("%region_id%", fakeRegion.getId());
+                value = value.replace("%region_owners%", "§a" + fakeRegion.getOwner().getName());
+            } else {
+                value = value.replace("%region_id%", region.getId());
+                value = value.replace("%region_owners%", FormatterUtil.formatPlayerList(region.getOwners().getUniqueIds()));
+                value = value.replace("%region_members%", FormatterUtil.formatPlayerList(region.getMembers().getUniqueIds()));
+                value = value.replace("%region_owners_size%", Integer.toString(region.getOwners().size()));
+                value = value.replace("%region_members_size%", Integer.toString(region.getMembers().size()));
+                Database database = new Database(region);
+                if (database.hasRegion()) {
+                    HomeManager home = plugin.module().home().homeManager(player, region);
+                    value = value.replace("%region_creation_date%", database.date());
+                    value = value.replace("%region_max_owners%", Integer.toString(database.maxOwners()));
+                    value = value.replace("%region_max_members%", Integer.toString(database.maxMembers()));
+                    value = value.replace("%region_has_home%", FormatterUtil.formatPlaceBoolean(home.hasLocation()));
+                }
             }
         }
 

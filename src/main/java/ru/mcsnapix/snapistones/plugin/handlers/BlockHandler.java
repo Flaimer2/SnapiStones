@@ -5,6 +5,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import de.tr7zw.changeme.nbtapi.NBT;
 import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,7 +24,6 @@ import ru.mcsnapix.snapistones.plugin.database.Database;
 import ru.mcsnapix.snapistones.plugin.settings.config.MainConfig;
 import ru.mcsnapix.snapistones.plugin.settings.message.Message;
 import ru.mcsnapix.snapistones.plugin.utils.BlockUtil;
-import ru.mcsnapix.snapistones.plugin.utils.ItemUtil;
 import ru.mcsnapix.snapistones.plugin.utils.RegionUtil;
 import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
@@ -57,8 +57,6 @@ public class BlockHandler implements Listener {
             return;
         }
 
-        event.setCancelled(true);
-
         if (!plugin.worldGuard().createProtectionQuery().testBlockPlace(player, block.getLocation(), block.getType())) {
             return;
         }
@@ -67,9 +65,7 @@ public class BlockHandler implements Listener {
         Location location = block.getLocation();
 
         World world = location.getWorld();
-        double blockX = location.getX();
-        double blockY = location.getY();
-        double blockZ = location.getZ();
+        double blockX = location.getX(), blockY = location.getY(), blockZ = location.getZ();
 
         RegionUtil regionUtil = new RegionUtil(world);
         RegionManager rm = regionUtil.regionManager();
@@ -86,8 +82,9 @@ public class BlockHandler implements Listener {
 
         ApplicableRegionSet regions = rm.getApplicableRegions(region);
         if (regions.size() > 0) {
-            snapPlayer.sendMessage(message.cannotPlaceProtectedBlock());
             event.setCancelled(true);
+            snapPlayer.sendMessage(message.cannotPlaceProtectedBlock());
+            return;
         }
 
         region.getOwners().addPlayer(snapPlayer.localPlayer());
@@ -95,27 +92,18 @@ public class BlockHandler implements Listener {
 
         // ! Module Upgrade
         Database database = new Database(region);
+        database.createRegion(snapPlayer.name());
 
         if (itemInHand != null) {
-            if (ItemUtil.hasTag(itemInHand, "effect")) {
-                String effects = ItemUtil.nbtTag(itemInHand, "effect");
-                database.effects(effects);
+            String effect = NBT.get(itemInHand, nbt -> nbt.getString("effect"));
+            if (!effect.isEmpty()) {
+                database.effects(effect);
             }
 
-            if (ItemUtil.hasTag(itemInHand, "maxOwner")) {
-                String maxOwner = ItemUtil.nbtTag(itemInHand, "maxOwner");
-                database.maxOwners(maxOwner);
-            }
-
-            if (ItemUtil.hasTag(itemInHand, "maxMember")) {
-                String maxMember = ItemUtil.nbtTag(itemInHand, "maxMember");
-                database.maxMembers(maxMember);
-            }
-
-            ItemStack item = itemInHand.clone();
-            item.setAmount(1);
-            player.getInventory().removeItem(item);
-            block.setType(xMaterial.parseMaterial());
+            int maxOwner = Integer.parseInt(NBT.get(itemInHand, nbt -> nbt.getString("maxOwner")));
+            database.maxOwners(maxOwner);
+            int maxMember = Integer.parseInt(NBT.get(itemInHand, nbt -> nbt.getString("maxMember")));
+            database.maxMembers(maxMember);
         }
 
         plugin.callEvent(new RegionCreateEvent(snapPlayer, region, protectedBlock, location));

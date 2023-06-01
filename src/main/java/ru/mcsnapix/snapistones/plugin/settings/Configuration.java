@@ -67,14 +67,12 @@ public final class Configuration<C> {
         } catch (ConfigFormatSyntaxException ex) {
             configData = configHelper.getFactory().loadDefaults();
             logger.error("The yaml syntax in your configuration is invalid. "
-                    + "Check your YAML syntax with a tool such as https://yaml-online-parser.appspot.com/");
-            ex.printStackTrace();
+                    + "Check your YAML syntax with a tool such as https://yaml-online-parser.appspot.com/", ex);
 
         } catch (InvalidConfigException ex) {
             configData = configHelper.getFactory().loadDefaults();
             logger.error("One of the values in your configuration is not valid. "
-                    + "Check to make sure you have specified the right data types.");
-            ex.printStackTrace();
+                    + "Check to make sure you have specified the right data types.", ex);
         }
     }
 

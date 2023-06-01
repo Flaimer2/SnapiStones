@@ -28,7 +28,7 @@ public class HomeModule implements IModule {
         homeConfig = Configuration.create(
                 plugin,
                 module.pathSettings(),
-                "config.yml",
+                "home.yml",
                 HomeConfig.class,
                 plugin.options()
         );

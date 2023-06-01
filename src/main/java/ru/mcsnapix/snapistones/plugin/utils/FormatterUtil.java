@@ -30,7 +30,9 @@ public class FormatterUtil {
     }
 
     public List<String> formatList(List<String> list, String format) {
-        List<String> formatList = new ArrayList<>(list);
+        if (list == null) return null;
+
+        List<String> formatList = new ArrayList<>();
 
         for (String s : list) {
             formatList.add(format.replace("%name%", s));

@@ -7,7 +7,6 @@ import lombok.experimental.Accessors;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.modules.Module;
 import ru.mcsnapix.snapistones.plugin.modules.interfaces.IModule;
-import ru.mcsnapix.snapistones.plugin.modules.upgrade.listeners.EffectListener;
 import ru.mcsnapix.snapistones.plugin.modules.upgrade.settings.UpgradeConfig;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;
 
@@ -26,11 +25,11 @@ public class UpgradeModule implements IModule {
         upgradeConfig = Configuration.create(
                 plugin,
                 module.pathSettings(),
-                "config.yml",
+                "upgrade.yml",
                 UpgradeConfig.class,
                 plugin.options()
         );
-        plugin.getServer().getPluginManager().registerEvents(new EffectListener(this), plugin);
+//        plugin.getServer().getPluginManager().registerEvents(new EffectListener(this), plugin);
     }
 
     @Override

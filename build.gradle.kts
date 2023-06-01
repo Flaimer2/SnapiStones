@@ -24,6 +24,7 @@ repositories {
         name = "sonatype"
     }
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
 }
 
@@ -34,7 +35,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.projectlombok:lombok:1.18.26")
     compileOnly("org.jetbrains:annotations:23.0.0")
-    compileOnly("com.google.code.gson:gson:2.8.7")
+    compileOnly("com.google.code.gson:gson:2.8.9")
     compileOnly("com.sk89q.worldguard:worldguard-legacy:6.2")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:6.1.3-SNAPSHOT")
     // Module Hologram
@@ -45,6 +46,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.12.0")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("co.aikar:idb-core:1.0.0-SNAPSHOT")
+    implementation("de.tr7zw:item-nbt-api:2.11.2")
     implementation("com.zaxxer:HikariCP:2.4.1")
 }
 
@@ -65,11 +67,13 @@ fun com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.relocateDependenc
 tasks {
     shadowJar {
         relocateDependency("space.arim.dazzleconf")
+        relocateDependency("net.kyori")
         relocateDependency("org.yaml")
         relocateDependency("com.zaxxer")
-        relocate("co.aikar.commands", "ru.mcsnapix.library.acf")
-        relocate("co.aikar.idb", "ru.mcsnapix.library.idb")
-        relocate("co.aikar.locales", "ru.mcsnapix.library.locales")
+        relocateDependency("de.tr7zw")
+        relocate("co.aikar.commands", "$libraryPackage.acf")
+        relocate("co.aikar.idb", "$libraryPackage.idb")
+        relocate("co.aikar.locales", "$libraryPackage.locales")
     }
 
     compileJava {
@@ -89,6 +93,7 @@ bukkit {
     main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
     description = "Плагин на блоки привата"
     depend = listOf("WorldEdit", "WorldGuard")
+    softDepend = listOf("DecentHolograms")
     website = "https://mcsnapix.ru"
     authors = listOf("SnapiX", "Flaimer")
 }

@@ -2,7 +2,6 @@ package ru.mcsnapix.snapistones.plugin.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -10,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ru.mcsnapix.snapistones.plugin.FakeProtectedRegion;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
@@ -26,6 +26,7 @@ import ru.mcsnapix.snapistones.plugin.utils.RegionUtil;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CommandAlias("rg|region")
 public class RegionCommand extends BaseCommand {
@@ -190,10 +191,10 @@ public class RegionCommand extends BaseCommand {
         }
 
         Database database = new Database(region);
-        boolean member = database.isMember(name);
-        boolean owner = database.isOwner(name);
+        boolean isMember = database.isMember(name);
+        boolean isOwner = database.isOwner(name);
 
-        if (owner || member) {
+        if (isMember || isOwner) {
             snapPlayer.sendMessage(command.playerAlreadyInRegion());
             return;
         }
@@ -202,9 +203,13 @@ public class RegionCommand extends BaseCommand {
         UpgradeConfig upgradeConfig = plugin.module().upgrade().upgradeConfig().data();
 
         int maxMembers = upgradeConfig.limitMember().get(database.maxMembers());
-        int members = database.members().size();
+        List<String> members = database.members();
+        int member = 0;
+        if (members != null) {
+            member = members.size();
+        }
 
-        if (maxMembers <= members) {
+        if (maxMembers <= member) {
             snapPlayer.sendMessage(upgradeConfig.message().limit().addMember());
             return;
         }
@@ -255,15 +260,15 @@ public class RegionCommand extends BaseCommand {
         }
 
         Database database = new Database(region);
-        boolean member = database.isMember(name);
-        boolean owner = database.isOwner(name);
+        boolean isMember = database.isMember(name);
+        boolean isOwner = database.isOwner(name);
 
-        if (owner) {
+        if (isOwner) {
             snapPlayer.sendMessage(command.playerAlreadyInRegion());
             return;
         }
 
-        if (member) {
+        if (isMember) {
             region.getMembers().removePlayer(name);
         }
 
@@ -271,9 +276,13 @@ public class RegionCommand extends BaseCommand {
         UpgradeConfig upgradeConfig = plugin.module().upgrade().upgradeConfig().data();
 
         int maxOwners = upgradeConfig.limitOwner().get(database.maxOwners());
-        int owners = database.owners().size();
+        List<String> owners = database.owners();
+        int owner = 0;
+        if (owners != null) {
+            owner = owners.size();
+        }
 
-        if (maxOwners <= owners) {
+        if (maxOwners <= owner) {
             snapPlayer.sendMessage(upgradeConfig.message().limit().addOwner());
             return;
         }
@@ -315,14 +324,13 @@ public class RegionCommand extends BaseCommand {
         HomeModule home = plugin.module().home();
         HomeConfig config = home.homeConfig().data();
         SnapPlayer snapPlayer = SnapAPI.player(player);
-        HomeManager homeManager = home.homeManager(snapPlayer);
 
-        List<ProtectedRegion> regionList = homeManager.listRegionWithHome();
+        List<ProtectedRegion> regionList = snapPlayer.memberRegions().stream().filter(r -> new Database(r).hasRegion()).collect(Collectors.toList());;
         int count = regionList.size();
 
         if (count == 1) {
             snapPlayer = SnapAPI.player(player, regionList.get(0));
-            homeManager = home.homeManager(snapPlayer);
+            HomeManager homeManager = home.homeManager(snapPlayer);
 
             homeManager.teleport();
             return;
@@ -340,6 +348,7 @@ public class RegionCommand extends BaseCommand {
 
         ProtectedRegion region = snapPlayer.regionUtil().getRegion(id);
         snapPlayer = SnapAPI.player(player, region);
+        HomeManager homeManager = home.homeManager(snapPlayer);
 
         if (!snapPlayer.hasPlayerInRegion()) {
             snapPlayer.sendMessage(config.commands().home().noMember());
@@ -369,7 +378,7 @@ public class RegionCommand extends BaseCommand {
 
     private boolean hasRegion(SnapPlayer player, String id) {
         if (!player.regionUtil().hasRegion(id)) {
-            ProtectedRegion region = new GlobalProtectedRegion(id);
+            ProtectedRegion region = new FakeProtectedRegion(id, player.player());
             SnapPlayer snapPlayer = SnapAPI.player(player.player(), region);
             snapPlayer.sendMessage(message.regionNotExist());
             return false;
