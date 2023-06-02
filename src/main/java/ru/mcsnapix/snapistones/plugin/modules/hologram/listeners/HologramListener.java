@@ -32,13 +32,16 @@ public class HologramListener implements Listener {
         String nameBlock = FormatterUtil.formatItem(event.protectedBlock().material());
         HologramOptions hologramOptions = hologramConfig.blocks().get(nameBlock);
 
-        Hologram hologram = DHAPI.createHologram(
-                id,
+        if (hologramOptions == null) {
+            return;
+        }
+
+        Hologram hologram = DHAPI.createHologram(id,
                 event.location().add(
                         0.5,
                         hologramOptions.height(),
-                        0.5),
-                player.placeholderParser().parseStrings(hologramOptions.lines())
+                        0.5
+                ), player.placeholderParser().parseStrings(hologramOptions.lines())
         );
 
         hologram.showAll();

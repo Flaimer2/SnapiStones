@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
 
 @RequiredArgsConstructor
@@ -18,6 +19,10 @@ public class RegionLeaveEvent extends Event {
     private final ProtectedRegion region;
     @NonNull
     private SnapPlayer player;
+    @NonNull
+    private ProtectedBlock protectedBlock;
+    @NonNull
+    private final Boolean hasPlayerInRegion = false;
 
     public static HandlerList getHandlerList() {
         return HANDLERS_LIST;
