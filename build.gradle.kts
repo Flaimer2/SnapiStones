@@ -12,7 +12,7 @@ shadowJar.apply {
 }
 
 group = "ru.mcsnapix"
-version = "1.0.0-alpha"
+version = "0.0.3-alpha"
 
 repositories {
     mavenCentral()
@@ -26,6 +26,7 @@ repositories {
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
@@ -40,6 +41,7 @@ dependencies {
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:6.1.3-SNAPSHOT")
     // Module Hologram
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.1")
+    compileOnly("me.clip:placeholderapi:2.11.3")
 
     implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.1")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0")
@@ -47,6 +49,7 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("co.aikar:idb-core:1.0.0-SNAPSHOT")
     implementation("de.tr7zw:item-nbt-api:2.11.2")
+    implementation("commons-collections:commons-collections:3.2.2")
     implementation("com.zaxxer:HikariCP:2.4.1")
 }
 
@@ -89,11 +92,11 @@ tasks {
 
 bukkit {
     name = "SnapiStones"
-    version = "1.0.0-alpha"
+    version = "0.0.3-alpha"
     main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
     description = "Плагин на блоки привата"
     depend = listOf("WorldEdit", "WorldGuard")
-    softDepend = listOf("DecentHolograms")
+    softDepend = listOf("PlaceholderAPI", "DecentHolograms")
     website = "https://mcsnapix.ru"
     authors = listOf("SnapiX", "Flaimer")
 }

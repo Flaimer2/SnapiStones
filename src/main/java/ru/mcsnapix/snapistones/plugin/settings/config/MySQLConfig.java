@@ -1,17 +1,17 @@
 package ru.mcsnapix.snapistones.plugin.settings.config;
 
-import space.arim.dazzleconf.annote.ConfDefault;
+import static space.arim.dazzleconf.annote.ConfDefault.DefaultString;
 
 public interface MySQLConfig {
-    @ConfDefault.DefaultString("localhost:3306")
+    @DefaultString("localhost:3306")
     String host();
 
-    @ConfDefault.DefaultString("server_global")
+    @DefaultString("server_global")
     String database();
 
-    @ConfDefault.DefaultString("root")
+    @DefaultString("root")
     String username();
 
-    @ConfDefault.DefaultString("root")
+    @DefaultString("root")
     String password();
 }

@@ -1,10 +1,10 @@
-package ru.mcsnapix.snapistones.plugin.settings.config.blocks;
+package ru.mcsnapix.snapistones.plugin.settings.config.block;
 
 import space.arim.dazzleconf.annote.SubSection;
 
-public interface BlockOptions {
-    static BlockOptions of(String symbol, int radius, String placeSound, String breakSound, @SubSection PlaceEffect placeEffect) {
-        return new BlockOptions() {
+public interface BlockOption {
+    static BlockOption of(String symbol, int radius, String placeSound, String breakSound, @SubSection PlaceEffect placeEffect) {
+        return new BlockOption() {
             @Override
             public String symbol() {
                 return symbol;
@@ -41,4 +41,9 @@ public interface BlockOptions {
     String breakSound();
 
     @SubSection PlaceEffect placeEffect();
+
+    default String formatRadius() {
+        String formattedRadius = Integer.toString(radius() * 2 + 1);
+        return String.format("%sx%sx%s", formattedRadius, formattedRadius, formattedRadius);
+    }
 }

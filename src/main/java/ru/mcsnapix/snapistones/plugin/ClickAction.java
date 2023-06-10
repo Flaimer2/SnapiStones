@@ -1,4 +1,4 @@
-package ru.mcsnapix.snapistones.plugin.api.enums;
+package ru.mcsnapix.snapistones.plugin;
 
 public enum ClickAction {
     LEFT,

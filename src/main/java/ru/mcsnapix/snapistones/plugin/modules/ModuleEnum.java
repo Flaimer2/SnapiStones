@@ -1,9 +1,8 @@
-package ru.mcsnapix.snapistones.plugin.modules.enums;
+package ru.mcsnapix.snapistones.plugin.modules;
 
 public enum ModuleEnum {
     HOLOGRAM,
     HOME,
     FLAGS,
-    MENU,
     UPGRADE
 }

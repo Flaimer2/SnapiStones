@@ -1,14 +1,13 @@
 package ru.mcsnapix.snapistones.plugin.api.events.region;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
-import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
+import ru.mcsnapix.snapistones.plugin.api.region.Region;
 
 @RequiredArgsConstructor
 @Accessors(fluent = true)
@@ -16,13 +15,11 @@ import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
 public class RegionLeaveEvent extends Event {
     private static final HandlerList HANDLERS_LIST = new HandlerList();
     @NonNull
-    private final ProtectedRegion region;
+    private final String regionOwner;
     @NonNull
-    private SnapPlayer player;
+    private Player player;
     @NonNull
-    private ProtectedBlock protectedBlock;
-    @NonNull
-    private final Boolean hasPlayerInRegion = false;
+    private Region region;
 
     public static HandlerList getHandlerList() {
         return HANDLERS_LIST;

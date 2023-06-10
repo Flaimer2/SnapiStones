@@ -1,40 +1,16 @@
 package ru.mcsnapix.snapistones.plugin.handlers;
 
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import ru.mcsnapix.snapistones.plugin.ReplacedList;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
-import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
-import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
-import ru.mcsnapix.snapistones.plugin.api.enums.ClickAction;
-import ru.mcsnapix.snapistones.plugin.api.events.block.BlockInteractEvent;
-import ru.mcsnapix.snapistones.plugin.api.events.region.RegionRemoveEvent;
-import ru.mcsnapix.snapistones.plugin.database.Database;
-import ru.mcsnapix.snapistones.plugin.modules.upgrade.UpgradeModule;
-import ru.mcsnapix.snapistones.plugin.modules.upgrade.settings.UpgradeConfig;
-import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
-import ru.mcsnapix.snapistones.plugin.utils.BlockUtil;
-import ru.mcsnapix.snapistones.plugin.utils.FormatterUtil;
-import ru.mcsnapix.snapistones.plugin.utils.RegionUtil;
-import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
-
-import java.util.List;
+import ru.mcsnapix.snapistones.plugin.api.SnapApi;
+import ru.mcsnapix.snapistones.plugin.api.region.Region;
 
 @RequiredArgsConstructor
 public class ProtectedBlockHandler implements Listener {
@@ -55,9 +31,12 @@ public class ProtectedBlockHandler implements Listener {
         }
 
         Location location = block.getLocation();
-        if (!BlockUtil.isRegionProtectedBlock(location)) {
-            return;
-        }
+        Region region = SnapApi.getRegion(location);
+        if (region == null) return;
+        if (region.get)
+            if (!BlockUtil.isRegionProtectedBlock(location)) {
+                return;
+            }
 
         XMaterial item = XMaterial.matchXMaterial(block.getType());
         Player player = event.getPlayer();

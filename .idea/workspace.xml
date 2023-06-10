@@ -62,11 +62,14 @@
 }</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="ru.mcsnapix.snapistones.plugin.handlers" />
       <recent name="ru.mcsnapix.snapistones.plugin.modules.flags" />
       <recent name="ru.mcsnapix.snapistones.plugin.modules.hologram.listeners" />
       <recent name="ru.mcsnapix.snapistones.plugin.modules.upgrade.settings" />
-      <recent name="ru.mcsnapix.snapistones.plugin.handlers" />
       <recent name="ru.mcsnapix.snapistones.plugin.modules.upgrade.listeners" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="ru.mcsnapix.snapistones.plugin.api" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="ru.mcsnapix.snapistones.plugin.api.events.region" />

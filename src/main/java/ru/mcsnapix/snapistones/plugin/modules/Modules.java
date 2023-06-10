@@ -2,13 +2,10 @@ package ru.mcsnapix.snapistones.plugin.modules;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import lombok.experimental.Accessors;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.modules.enums.ModuleEnum;
 import ru.mcsnapix.snapistones.plugin.modules.flags.FlagModule;
 import ru.mcsnapix.snapistones.plugin.modules.hologram.HologramModule;
 import ru.mcsnapix.snapistones.plugin.modules.home.HomeModule;
-import ru.mcsnapix.snapistones.plugin.modules.interfaces.IModule;
 import ru.mcsnapix.snapistones.plugin.modules.upgrade.UpgradeModule;
 
 import java.nio.file.Files;
@@ -16,9 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-@Accessors(fluent = true)
-@Getter
-public class Module {
+public class Modules {
+    @Getter
     private final SnapiStones plugin = SnapiStones.get();
     private final Map<ModuleEnum, IModule> moduleMap = Map.of(
             ModuleEnum.HOLOGRAM, new HologramModule(this),
@@ -26,16 +22,17 @@ public class Module {
             ModuleEnum.FLAGS, new FlagModule(this),
             ModuleEnum.UPGRADE, new UpgradeModule(this)
     );
+    @Getter
     private Path pathSettings;
 
-    public Module() {
+    public Modules() {
         createPathSettings();
         moduleMap.forEach(this::enableModule);
     }
 
     private void enableModule(ModuleEnum moduleEnum, IModule module) {
         module.load();
-        plugin.log().info("§fМодуль §a{} §fзагружен", moduleEnum.name().toLowerCase());
+        plugin.getLog().info("§fМодуль §a{} §fзагружен", moduleEnum.name().toLowerCase());
     }
 
     public void reloadModules() {
@@ -44,7 +41,7 @@ public class Module {
 
     private void reloadModule(ModuleEnum moduleEnum, IModule module) {
         module.reload();
-        plugin.log().info("§fМодуль §a{} §fперезагружен", moduleEnum.name().toLowerCase());
+        plugin.getLog().info("§fМодуль §a{} §fперезагружен", moduleEnum.name().toLowerCase());
     }
 
     private IModule getModule(ModuleEnum moduleEnum) {
@@ -65,10 +62,6 @@ public class Module {
 
     public UpgradeModule upgrade() {
         return (UpgradeModule) getModule(ModuleEnum.UPGRADE);
-    }
-
-    public Path pathSettings() {
-        return pathSettings;
     }
 
     @SneakyThrows

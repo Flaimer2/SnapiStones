@@ -1,4 +1,4 @@
-package ru.mcsnapix.snapistones.plugin.settings.config.blocks;
+package ru.mcsnapix.snapistones.plugin.settings.config.block;
 
 public interface PlaceEffect {
     static PlaceEffect of(String name, int amount) {

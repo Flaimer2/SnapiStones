@@ -2,47 +2,23 @@ package ru.mcsnapix.snapistones.plugin.api;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.experimental.UtilityClass;
-import org.bukkit.entity.Player;
-import ru.mcsnapix.snapistones.plugin.utils.PlaceholderParser;
-import ru.mcsnapix.snapistones.plugin.utils.Utils;
+import org.bukkit.Location;
+import org.bukkit.World;
+import ru.mcsnapix.snapistones.plugin.api.region.Region;
+import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
+import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 
 @UtilityClass
-public class SnapAPI {
-    public SnapPlayer player(Player player) {
-        return new SnapPlayer(player, PlaceholderParser.builder()
-                .player(player)
-                .build());
+public class SnapApi {
+    public Region getRegion(World world, String id) {
+        return RegionRegistry.get().getRegion(world, id);
     }
 
-    public SnapPlayer player(Player player, ProtectedRegion region) {
-        return new SnapPlayer(player, region, PlaceholderParser.builder()
-                .player(player)
-                .region(region)
-                .build());
-    }
+    public Region getRegion(Location location) {
+        World world = location.getWorld();
+        ProtectedRegion protectedRegion = WGRegionUtil.getRegion(location);
+        if (protectedRegion == null) return null;
 
-    public SnapPlayer player(Player player, ProtectedRegion region, ProtectedBlock protectedBlock) {
-        return new SnapPlayer(player, region, PlaceholderParser.builder()
-                .player(player)
-                .region(region)
-                .protectedBlock(protectedBlock)
-                .build());
-    }
-
-    public SnapPlayer player(Player player, ProtectedRegion region, ProtectedBlock protectedBlock, String anotherName) {
-        return new SnapPlayer(player, region, PlaceholderParser.builder()
-                .player(player)
-                .region(region)
-                .protectedBlock(protectedBlock)
-                .anotherPlayer(Utils.offlinePlayer(anotherName))
-                .build());
-    }
-
-    public SnapPlayer player(Player player, ProtectedRegion region, String anotherName) {
-        return new SnapPlayer(player, region, PlaceholderParser.builder()
-                .player(player)
-                .region(region)
-                .anotherPlayer(Utils.offlinePlayer(anotherName))
-                .build());
+        return RegionRegistry.get().getRegion(world, protectedRegion.getId());
     }
 }

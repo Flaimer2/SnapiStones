@@ -1,4 +1,4 @@
-package ru.mcsnapix.snapistones.plugin.modules.interfaces;
+package ru.mcsnapix.snapistones.plugin.modules;
 
 public interface IModule {
     void load();

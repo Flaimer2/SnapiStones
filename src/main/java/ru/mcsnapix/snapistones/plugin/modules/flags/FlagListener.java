@@ -1,13 +1,10 @@
 package ru.mcsnapix.snapistones.plugin.modules.flags;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.bukkit.event.Listener;
-import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
-import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
-import ru.mcsnapix.snapistones.plugin.api.events.region.RegionEnterEvent;
-import ru.mcsnapix.snapistones.plugin.modules.flags.settings.FlagConfig;
+import ru.mcsnapix.snapistones.plugin.modules.flags.config.FlagConfig;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class FlagListener implements Listener {
     private final FlagConfig flagConfig;
 
