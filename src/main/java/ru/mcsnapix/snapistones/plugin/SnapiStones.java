@@ -5,16 +5,23 @@ import co.aikar.idb.Database;
 import co.aikar.idb.DatabaseOptions;
 import co.aikar.idb.PooledDatabaseOptions;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import lombok.NonNull;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
+import ru.mcsnapix.snapistones.plugin.api.SnapApi;
+import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
 import ru.mcsnapix.snapistones.plugin.commands.Commands;
 import ru.mcsnapix.snapistones.plugin.handlers.BlockHandler;
+import ru.mcsnapix.snapistones.plugin.handlers.PlayerHandler;
 import ru.mcsnapix.snapistones.plugin.handlers.ProtectedBlockHandler;
+import ru.mcsnapix.snapistones.plugin.listeners.RegionListener;
 import ru.mcsnapix.snapistones.plugin.modules.Modules;
 import ru.mcsnapix.snapistones.plugin.placeholder.RegionExpansion;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;
@@ -22,8 +29,8 @@ import ru.mcsnapix.snapistones.plugin.settings.config.MainConfig;
 import ru.mcsnapix.snapistones.plugin.settings.config.MySQLConfig;
 import ru.mcsnapix.snapistones.plugin.settings.config.block.BlockConfig;
 import ru.mcsnapix.snapistones.plugin.settings.message.Message;
+import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 import space.arim.dazzleconf.ConfigurationOptions;
-import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 @Getter
 public final class SnapiStones extends JavaPlugin {
@@ -58,6 +65,7 @@ public final class SnapiStones extends JavaPlugin {
         if (isPluginEnable("PlaceholderAPI")) {
             new RegionExpansion().register();
         }
+        registerRegions();
     }
 
     public void onReload() {
@@ -85,7 +93,6 @@ public final class SnapiStones extends JavaPlugin {
 
     private void loadConfigs() {
         options = new ConfigurationOptions.Builder()
-                .sorter(new AnnotationBasedSorter())
                 .setCreateSingleElementCollections(true)
                 .build();
         mainConfig = Configuration.create(plugin, "config.yml", MainConfig.class, options);
@@ -147,5 +154,18 @@ public final class SnapiStones extends JavaPlugin {
 
     public boolean isPluginEnable(String name) {
         return getServer().getPluginManager().isPluginEnabled(name);
+    }
+
+    public void registerRegions() {
+        MainConfig config = mainConfig.data();
+        for (World world : Bukkit.getWorlds()) {
+            if (!mainConfig.data().enableWorld().contains(world.getName())) continue;
+
+            for (ProtectedRegion region : WGRegionUtil.getRegions(world)) {
+                if (config.disableRegion().contains(region.getId())) continue;
+
+                RegionRegistry.get().addRegion(region.getId(), region);
+            }
+        }
     }
 }

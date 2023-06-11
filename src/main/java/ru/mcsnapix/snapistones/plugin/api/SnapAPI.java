@@ -3,22 +3,48 @@ package ru.mcsnapix.snapistones.plugin.api;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
-import org.bukkit.World;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
 import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @UtilityClass
 public class SnapApi {
-    public Region getRegion(World world, String id) {
-        return RegionRegistry.get().getRegion(world, id);
+    private final RegionRegistry regionRegistry = RegionRegistry.get();
+
+    public Region getRegion(String id) {
+        return regionRegistry.getRegion(id);
     }
 
     public Region getRegion(Location location) {
-        World world = location.getWorld();
         ProtectedRegion protectedRegion = WGRegionUtil.getRegion(location);
         if (protectedRegion == null) return null;
 
-        return getRegion(world, protectedRegion.getId());
+        return getRegion(protectedRegion.getId());
+    }
+
+    public List<Region> getRegions() {
+        return (List<Region>) regionRegistry.getRegionMap().values();
+    }
+
+    public List<Region> getRegionsByPlayer(String player) {
+        return getRegions().stream().filter(region -> region.hasPlayerInRegion(player)).collect(Collectors.toList());
+    }
+
+    public List<Region> getRegionsByOwner(String owner) {
+        return getRegions().stream().filter(region -> region.hasOwnerInRegion(owner)).collect(Collectors.toList());
+    }
+
+    public List<Region> getRegionsByMember(String member) {
+        return getRegions().stream().filter(region -> region.hasMemberInRegion(member)).collect(Collectors.toList());
+    }
+
+    public boolean isProtectedBlock(Location location) {
+        Region region = SnapApi.getRegion(location);
+        if (region == null) return false;
+        ProtectedBlock protectedBlock = region.protectedBlock();
+        return protectedBlock.center() == location;
     }
 }

@@ -1,6 +1,7 @@
 package ru.mcsnapix.snapistones.plugin.handlers;
 
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
@@ -13,7 +14,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import ru.mcsnapix.snapistones.plugin.ClickAction;
+import ru.mcsnapix.snapistones.plugin.ReplacedList;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.SnapApi;
@@ -21,8 +25,15 @@ import ru.mcsnapix.snapistones.plugin.api.events.block.BlockInteractEvent;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionRemoveEvent;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.database.Database;
+import ru.mcsnapix.snapistones.plugin.modules.Modules;
+import ru.mcsnapix.snapistones.plugin.modules.upgrades.UpgradeModule;
+import ru.mcsnapix.snapistones.plugin.modules.upgrades.config.UpgradeConfig;
+import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
+import ru.mcsnapix.snapistones.plugin.util.FormatterUtil;
 import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
+import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,17 +52,14 @@ public class ProtectedBlockHandler implements Listener {
 
         Location location = block.getLocation();
         Region region = SnapApi.getRegion(location);
-        if (region == null) return;
-        ProtectedBlock protectedBlock = region.protectedBlock();
-        if (protectedBlock.center() != location) return;
+
+        if (!SnapApi.isProtectedBlock(location)) return;
 
         Player player = event.getPlayer();
         if (player == null) return;
         if (!region.hasPlayerInRegion(player.getName())) return;
 
-        boolean owner;
-
-        if (region.hasOwnerInRegion(player.getName())) owner = true;
+        boolean owner = region.hasOwnerInRegion(player.getName());
 
         ClickAction clickAction = ClickAction.getClickAction(player, action);
         plugin.callEvent(new BlockInteractEvent(player, clickAction, region, owner));
@@ -62,11 +70,12 @@ public class ProtectedBlockHandler implements Listener {
         Block block = event.getBlock();
         if (block == null) return;
 
+        XMaterial item = XMaterial.matchXMaterial(block.getType());
+
         Location location = block.getLocation();
         Region region = SnapApi.getRegion(location);
-        if (region == null) return;
-        ProtectedBlock protectedBlock = region.protectedBlock();
-        if (protectedBlock.center() != location) return;
+
+        if (!SnapApi.isProtectedBlock(location)) return;
 
         RegionManager regionManager = WGRegionUtil.getRegionManager(location.getWorld());
         event.setCancelled(true);
@@ -78,16 +87,20 @@ public class ProtectedBlockHandler implements Listener {
         }
 
         block.setType(Material.AIR);
+
+        Modules modules = plugin.getModules();
+
         // ! Module Upgrade
         List<String> effects = region.effects();
         int maxOwners = region.maxOwners();
         int maxMembers = region.maxMembers();
 
-        UpgradeModule upgradeModule = plugin.module().upgrade();
+        UpgradeModule upgradeModule = modules.upgrade();
         UpgradeConfig upgradeConfig = upgradeModule.upgradeConfig().data();
         var itemConfig = upgradeConfig.item();
 
         ItemStack itemDrop = item.parseItem();
+        assert itemDrop != null;
         ItemMeta itemMeta = itemDrop.getItemMeta();
         itemMeta.setDisplayName(itemConfig.name());
 
@@ -107,15 +120,15 @@ public class ProtectedBlockHandler implements Listener {
         itemMeta.setLore(lore);
         itemDrop.setItemMeta(itemMeta);
 
-        NBTItem nbti = new NBTItem(itemDrop);
+        NBTItem nbtItem = new NBTItem(itemDrop);
 
         if (effects != null) {
-            nbti.setString("effect", ListSerializer.serialize(effects));
+            nbtItem.setString("effect", ListSerializer.serialise(effects));
         }
-        nbti.setString("maxOwner", Integer.toString(maxOwners));
-        nbti.setString("maxMember", Integer.toString(maxMembers));
+        nbtItem.setString("maxOwner", Integer.toString(maxOwners));
+        nbtItem.setString("maxMember", Integer.toString(maxMembers));
 
-        block.getWorld().dropItem(block.getLocation(), nbti.getItem());
+        block.getWorld().dropItem(block.getLocation(), nbtItem.getItem());
 
         plugin.callEvent(new RegionRemoveEvent(player, region));
         regionManager.removeRegion(region.name());
@@ -124,11 +137,31 @@ public class ProtectedBlockHandler implements Listener {
     }
 
     @EventHandler
-    public void onBlockExplode(EntityExplodeEvent event) {
-        event.blockList().removeIf(
-                block ->
-                        BlockUtil.isRegionProtectedBlock(block.getLocation())
-        );
+    public void onEntityExplode(EntityExplodeEvent event) {
+        List<Block> blocks = event.blockList();
+
+        event.blockList().removeAll(getRemoveBlocks(blocks));
+    }
+
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent event) {
+        List<Block> blocks = event.blockList();
+
+        event.blockList().removeAll(getRemoveBlocks(blocks));
+    }
+
+    public List<Block> getRemoveBlocks(List<Block> blocks) {
+        List<Block> removeBlocks = new ArrayList<>();
+
+        for (Block block : blocks) {
+            Location location = block.getLocation();
+            Region region = SnapApi.getRegion(location);
+            if (region == null) continue;
+            ProtectedBlock protectedBlock = region.protectedBlock();
+            if (protectedBlock.center() == location) removeBlocks.add(block);
+        }
+
+        return removeBlocks;
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -143,7 +176,12 @@ public class ProtectedBlockHandler implements Listener {
 
     private void cancelEventIfProtectedBlocksPresent(List<Block> pushedBlocks, BlockPistonEvent event) {
         for (Block block : pushedBlocks) {
-            if (BlockUtil.isRegionProtectedBlock(block.getLocation())) {
+            Location location = block.getLocation();
+            Region region = SnapApi.getRegion(location);
+            if (region == null) continue;
+            ProtectedBlock protectedBlock = region.protectedBlock();
+
+            if (protectedBlock.center() == location) {
                 event.setCancelled(true);
             }
         }

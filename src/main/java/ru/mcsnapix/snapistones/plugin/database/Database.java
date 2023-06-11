@@ -45,7 +45,7 @@ public class Database {
     public List<String> getColumnAsList(Column column) {
         String serializedList = getColumnAsString(column);
         if (serializedList == null) return Collections.emptyList();
-        return ListSerializer.deserialize(serializedList);
+        return ListSerializer.deserialise(serializedList);
     }
 
     @SneakyThrows

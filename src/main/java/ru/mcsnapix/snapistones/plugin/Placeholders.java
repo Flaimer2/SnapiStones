@@ -1,6 +1,9 @@
-package ru.mcsnapix.snapistones.plugin.placeholder;
+package ru.mcsnapix.snapistones.plugin;
 
 import lombok.NonNull;
+import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -8,22 +11,25 @@ import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.util.FormatterUtil;
 
-public class PlaceholderManager {
+import java.util.List;
+
+@Setter
+public class Placeholders {
     @NonNull
     private final Player player;
     private Region region;
     private OfflinePlayer otherPlayer;
 
-    public PlaceholderManager(@NotNull Player player) {
+    public Placeholders(@NotNull Player player) {
         this.player = player;
     }
 
-    public PlaceholderManager(@NotNull Player player, Region region) {
+    public Placeholders(@NotNull Player player, Region region) {
         this.player = player;
         this.region = region;
     }
 
-    public PlaceholderManager(@NotNull Player player, Region region, OfflinePlayer otherPlayer) {
+    public Placeholders(@NotNull Player player, Region region, OfflinePlayer otherPlayer) {
         this.player = player;
         this.region = region;
         this.otherPlayer = otherPlayer;
@@ -52,5 +58,25 @@ public class PlaceholderManager {
         }
 
         return value;
+    }
+
+    public void sendMessage(String message) {
+        message = ChatColor.translateAlternateColorCodes('&', message);
+
+        player.sendMessage(replacePlaceholders(message));
+    }
+
+    public void sendMessage(List<String> messages) {
+        messages.forEach(this::sendMessage);
+    }
+
+    public List<String> replacePlaceholders(List<String> value) {
+        value.forEach(this::replacePlaceholders);
+        return value;
+    }
+
+    @SuppressWarnings("deprecation")
+    public void setOtherPlayer(String name) {
+        otherPlayer = Bukkit.getOfflinePlayer(name);
     }
 }

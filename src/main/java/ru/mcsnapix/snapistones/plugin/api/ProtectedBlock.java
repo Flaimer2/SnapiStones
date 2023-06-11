@@ -42,7 +42,7 @@ public class ProtectedBlock {
      */
     public ProtectedBlock(Region region) {
         Database database = region.database();
-        center = LocationSerializer.deserialize(database.getColumnAsString(Column.LOCATION));
+        center = LocationSerializer.deserialise(database.getColumnAsString(Column.LOCATION));
         blockMaterial = XMaterial.valueOf(database.getColumnAsString(Column.MATERIAL));
         blockOption = BlockUtil.getBlockOption(blockMaterial);
     }

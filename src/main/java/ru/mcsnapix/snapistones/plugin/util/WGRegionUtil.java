@@ -14,6 +14,12 @@ import org.jetbrains.annotations.Nullable;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.settings.config.MainConfig;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @UtilityClass
 public class WGRegionUtil {
     private final SnapiStones plugin = SnapiStones.get();
@@ -88,5 +94,19 @@ public class WGRegionUtil {
 
     public RegionManager getRegionManager(World world) {
         return worldGuard.getRegionManager(world);
+    }
+
+    public List<ProtectedRegion> getRegions(World world) {
+        List<ProtectedRegion> regions = new ArrayList<>();
+        Set<String> disabledRegions = new HashSet<>(config.disableRegion());
+
+        for (ProtectedRegion pr : getRegionManager(world).getRegions().values()) {
+            if (pr.getId().equalsIgnoreCase(ProtectedRegion.GLOBAL_REGION) || disabledRegions.contains(pr.getId())) {
+                continue;
+            }
+
+            regions.add(pr);
+        }
+        return regions;
     }
 }

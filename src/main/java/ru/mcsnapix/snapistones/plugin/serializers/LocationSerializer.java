@@ -7,11 +7,11 @@ import org.bukkit.World;
 
 @UtilityClass
 public class LocationSerializer {
-    public String serialize(Location location) {
+    public String serialise(Location location) {
         return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getWorld().getName() + ";" + location.getYaw() + ";" + location.getPitch();
     }
 
-    public Location deserialize(String s) {
+    public Location deserialise(String s) {
         String[] parts = s.split(";");
         if (parts.length == 0) {
             return null;

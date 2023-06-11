@@ -1,37 +1,35 @@
-package ru.mcsnapix.snapistones.plugin.modules.flags;
+package ru.mcsnapix.snapistones.plugin.modules.home;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.modules.IModule;
 import ru.mcsnapix.snapistones.plugin.modules.Modules;
-import ru.mcsnapix.snapistones.plugin.modules.flags.config.FlagConfig;
+import ru.mcsnapix.snapistones.plugin.modules.home.config.HomeConfig;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;
 
 @RequiredArgsConstructor
 @Accessors(fluent = true)
 @Getter
-public class FlagModule implements IModule {
+public class HomeModule implements IModule {
     private final Modules modules;
-    private Configuration<FlagConfig> flagConfig;
+    private Configuration<HomeConfig> homeConfig;
 
     @Override
     public void load() {
         SnapiStones plugin = modules.getPlugin();
-        flagConfig = Configuration.create(plugin,
+        homeConfig = Configuration.create(
+                plugin,
                 modules.getPathSettings(),
-                "flag.yml",
-                FlagConfig.class,
+                "home.yml",
+                HomeConfig.class,
                 plugin.getOptions()
         );
-
-        plugin.getServer().getPluginManager().registerEvents(new FlagListener(flagConfig.data()), plugin);
     }
 
     @Override
     public void reload() {
-        flagConfig.reloadConfig();
+        homeConfig.reloadConfig();
     }
 }

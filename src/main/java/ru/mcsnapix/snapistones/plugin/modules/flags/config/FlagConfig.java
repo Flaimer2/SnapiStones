@@ -1,12 +1,13 @@
 package ru.mcsnapix.snapistones.plugin.modules.flags.config;
 
-import space.arim.dazzleconf.annote.ConfDefault;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultObject;
 import space.arim.dazzleconf.annote.SubSection;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public interface FlagConfig {
+    @SuppressWarnings("unused") // used by DazzleConf
     static Map<String, FlagOption> defaultFlags() {
         Map<String, FlagOption> flagOptionsMap = new HashMap<>();
         flagOptionsMap.put(
@@ -16,6 +17,6 @@ public interface FlagConfig {
         return flagOptionsMap;
     }
 
-    @ConfDefault.DefaultObject("defaultFlags")
+    @DefaultObject("defaultFlags")
     Map<String, @SubSection FlagOption> blocks();
 }

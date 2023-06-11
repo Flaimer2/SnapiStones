@@ -45,99 +45,99 @@ public interface Message {
     @SubSection
     RegionInfo regionInfo();
 
+    interface RegionInfo {
+        @DefaultString("§fИспользуйте: §a/rg info регион")
+        String usage();
+
+        @DefaultStrings({
+                "",
+                "  §e§lИнформация о регионе:",
+                "",
+                "  §fНазвание региона: §a%region_id%",
+                "  §fРазмер региона: §a%region_size%",
+                "  §fВладельцы: §a%region_owners%",
+                "  §fУчастники: §a%region_members%",
+                ""
+        })
+        List<String> message();
+    }
+
     @SubSection
     RegionList regionList();
 
+    interface RegionList {
+        @DefaultString("<newline>  <aqua><b>Список регионов</b></aqua><newline>       ")
+        String header();
+
+        @DefaultString("  <white><count>. <green><hover:show_text:'<green>Нажмите, чтобы открыть меню региона'><click:run_command:/rg menu <region_id>><region_id></click></hover> <gray>– <white><location>")
+        String region();
+
+        @DefaultString("  <white>У вас <red>нет <white>регионов")
+        String noRegion();
+    }
+
     @SubSection
     Command command();
-}
 
-interface RegionInfo {
-    @DefaultString("§fИспользуйте: §a/rg info регион")
-    String usage();
+    interface Command {
+        @DefaultString("§fИгрока с таким ником §cне существует")
+        String playerNotFound();
 
-    @DefaultStrings({
-            "",
-            "  §e§lИнформация о регионе:",
-            "",
-            "  §fНазвание региона: §a%region_id%",
-            "  §fРазмер региона: §a%region_size%",
-            "  §fВладельцы: §a%region_owners%",
-            "  §fУчастники: §a%region_members%",
-            ""
-    })
-    List<String> message();
-}
+        @DefaultString("§fИгрок, с данным ником, §cне состоит §fв вашем регионе")
+        String playerNotInRegion();
 
-interface RegionList {
-    @DefaultString("<newline>  <aqua><b>Список регионов</b></aqua><newline>       ")
-    String header();
+        @DefaultString("§fИгрок, с данным ником, §aуже есть §fв вашем регионе")
+        String playerAlreadyInRegion();
 
-    @DefaultString("  <white><count>. <green><hover:show_text:'<green>Нажмите, чтобы открыть меню региона'><click:run_command:/rg menu <region_id>><region_id></click></hover> <gray>– <white><location>")
-    String region();
+        @SubSection
+        CommandRemove remove();
 
-    @DefaultString("  <white>У вас <red>нет <white>регионов")
-    String noRegion();
-}
+        interface CommandRemove {
+            @DefaultString("§fИспользуйте: §a/rg remove регион игрок")
+            String usage();
 
-interface Command {
-    @DefaultString("§fИгрока с таким ником §cне существует")
-    String playerNotFound();
+            @DefaultString("§fИспользуйте: §a/rg remove %region_id% игрок")
+            String usageAlt();
 
-    @DefaultString("§fИгрок, с данным ником, §cне состоит §fв вашем регионе")
-    String playerNotInRegion();
+            @DefaultString("§fВы §cне можете §fудалить себя")
+            String cannotRemoveSelf();
 
-    @DefaultString("§fИгрок, с данным ником, §aуже есть §fв вашем регионе")
-    String playerAlreadyInRegion();
+            @DefaultString("§fВы успешно §cудалили §fигрока &a%another_player_name%")
+            String success();
+        }
 
-    @SubSection
-    CommandRemove remove();
+        @SubSection
+        CommandAddMember addMember();
 
-    @SubSection
-    CommandAddMember addMember();
+        interface CommandAddMember {
+            @DefaultString("§fИспользуйте: §a/rg addmember регион игрок")
+            String usage();
 
-    @SubSection
-    CommandAddOwner addOwner();
-}
+            @DefaultString("§fИспользуйте: §a/rg addmember %region_id% игрок")
+            String usageAlt();
 
-interface CommandRemove {
-    @DefaultString("§fИспользуйте: §a/rg remove регион игрок")
-    String usage();
+            @DefaultString("§fВы §cне можете §fдобавить себя")
+            String cannotAddSelf();
 
-    @DefaultString("§fИспользуйте: §a/rg remove %region_id% игрок")
-    String usageAlt();
+            @DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
+            String success();
+        }
 
-    @DefaultString("§fВы §cне можете §fудалить себя")
-    String cannotRemoveSelf();
+        @SubSection
+        CommandAddOwner addOwner();
 
-    @DefaultString("§fВы успешно §cудалили §fигрока &a%another_player_name%")
-    String success();
-}
+        interface CommandAddOwner {
+            @DefaultString("§fИспользуйте: §a/rg addowner регион игрок")
+            String usage();
 
-interface CommandAddMember {
-    @DefaultString("§fИспользуйте: §a/rg addmember регион игрок")
-    String usage();
+            @DefaultString("§fИспользуйте: §a/rg addowner %region_id% игрок")
+            String usageAlt();
 
-    @DefaultString("§fИспользуйте: §a/rg addmember %region_id% игрок")
-    String usageAlt();
+            @DefaultString("§fВы §cне можете §fдобавить себя")
+            String cannotAddSelf();
 
-    @DefaultString("§fВы §cне можете §fдобавить себя")
-    String cannotAddSelf();
-
-    @DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
-    String success();
-}
-
-interface CommandAddOwner {
-    @DefaultString("§fИспользуйте: §a/rg addowner регион игрок")
-    String usage();
-
-    @DefaultString("§fИспользуйте: §a/rg addowner %region_id% игрок")
-    String usageAlt();
-
-    @DefaultString("§fВы §cне можете §fдобавить себя")
-    String cannotAddSelf();
-
-    @DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
-    String success();
+            @DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
+            String success();
+        }
+    }
 }

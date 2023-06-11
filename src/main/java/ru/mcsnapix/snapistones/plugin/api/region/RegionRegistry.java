@@ -1,14 +1,15 @@
 package ru.mcsnapix.snapistones.plugin.api.region;
 
-import org.bukkit.World;
-import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RegionRegistry {
     private static RegionRegistry INSTANCE;
-    private final Map<String, Region> regionMap = new ConcurrentHashMap<>();
+    @Getter private final Map<String, Region> regionMap = new ConcurrentHashMap<>();
 
     private RegionRegistry() {
     }
@@ -20,11 +21,15 @@ public class RegionRegistry {
         return INSTANCE;
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public Region getRegion(World world, String id) {
-        if (id == null) return null;
-        if (!WGRegionUtil.hasRegion(world, id)) return null;
+    public Region getRegion(@NonNull String id) {
+        return regionMap.get(id);
+    }
 
-        return regionMap.putIfAbsent(id, new Region(id, WGRegionUtil.getRegion(world, id)));
+    public void addRegion(@NonNull String id, @NonNull ProtectedRegion region) {
+        regionMap.putIfAbsent(id, new Region(id, region));
+    }
+
+    public void removeRegion(@NonNull String id) {
+        regionMap.remove(id);
     }
 }

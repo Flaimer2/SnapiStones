@@ -18,10 +18,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import ru.mcsnapix.snapistones.plugin.Placeholders;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionCreateEvent;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
+import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
 import ru.mcsnapix.snapistones.plugin.database.Database;
 import ru.mcsnapix.snapistones.plugin.settings.config.MainConfig;
 import ru.mcsnapix.snapistones.plugin.settings.config.block.BlockOption;
@@ -68,19 +70,21 @@ public class BlockHandler implements Listener {
 
         ProtectedRegion protectedRegion = new ProtectedCuboidRegion(id, min, max);
         ApplicableRegionSet regions = regionManager.getApplicableRegions(protectedRegion);
+        Placeholders placeholders = new Placeholders(player);
 
         if (regions.size() > 0) {
             event.setCancelled(true);
-            message.cannotPlaceProtectedBlock();
+            placeholders.sendMessage(message.cannotPlaceProtectedBlock());
             return;
         }
 
         Database database = new Database(id);
-        Region region = SnapApi.getRegion(world, id);
 
         protectedRegion.getOwners().addPlayer(localPlayer);
         regionManager.addRegion(protectedRegion);
         database.createRegion(player.getName(), location, xMaterial.name());
+        RegionRegistry.get().addRegion(id, protectedRegion);
+        Region region = SnapApi.getRegion(id);
 
         // ! Module Upgrade
         if (itemInHand != null) {

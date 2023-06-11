@@ -5,10 +5,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+import ru.mcsnapix.snapistones.plugin.Placeholders;
+import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.database.Column;
 import ru.mcsnapix.snapistones.plugin.database.Database;
+import ru.mcsnapix.snapistones.plugin.modules.home.config.HomeConfig;
 import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
 import ru.mcsnapix.snapistones.plugin.serializers.LocationSerializer;
 
@@ -153,7 +157,7 @@ public class Region {
      * Updates the home location of the region from the database.
      */
     public void updateHomeLocation() {
-        homeLocation = LocationSerializer.deserialize(database.getColumnAsString(Column.HOME_LOCATION));
+        homeLocation = LocationSerializer.deserialise(database.getColumnAsString(Column.HOME_LOCATION));
     }
 
     /**
@@ -171,8 +175,21 @@ public class Region {
      * @param location the new home location
      */
     public void homeLocation(Location location) {
-        database.updateColumn(Column.HOME_LOCATION, LocationSerializer.serialize(location));
+        database.updateColumn(Column.HOME_LOCATION, LocationSerializer.serialise(location));
         updateHomeLocation();
+    }
+
+    public void teleportHomeLocation(Player player) {
+        Placeholders placeholders = new Placeholders(player, this);
+        HomeConfig homeConfig = SnapiStones.get().getModules().home().homeConfig().data();
+
+        if (!hasHomeLocation()) {
+            placeholders.sendMessage(homeConfig.commands().home().noHomeInRegion());
+            return;
+        }
+
+        player.teleport(homeLocation());
+        placeholders.sendMessage(homeConfig.commands().home().success());
     }
 
     /**
@@ -267,11 +284,24 @@ public class Region {
      *
      * @param name the player's name
      */
-    public void addOwners(String name) {
+    public void addOwner(String name) {
         List<String> owners = owners();
         owners.add(name);
         protectedRegion.getOwners().addPlayer(name);
-        database.updateColumn(Column.OWNERS, ListSerializer.serialize(owners));
+        database.updateColumn(Column.OWNERS, ListSerializer.serialise(owners));
+        updateOwners();
+    }
+
+    /**
+     * Removes the player as an owner of the region and updates the database.
+     *
+     * @param name the player's name
+     */
+    public void removeOwner(String name) {
+        protectedRegion.getOwners().removePlayer(name);
+        List<String> owners = owners();
+        owners.remove(name);
+        database.updateColumn(Column.OWNERS, ListSerializer.serialise(owners));
         updateOwners();
     }
 
@@ -280,11 +310,24 @@ public class Region {
      *
      * @param name the player's name
      */
-    public void addMembers(String name) {
+    public void addMember(String name) {
         List<String> members = members();
         members.add(name);
         protectedRegion.getMembers().addPlayer(name);
-        database.updateColumn(Column.MEMBERS, ListSerializer.serialize(members));
+        database.updateColumn(Column.MEMBERS, ListSerializer.serialise(members));
+        updateMembers();
+    }
+
+    /**
+     * Removes the player as a member of the region and updates the database.
+     *
+     * @param name the player's name
+     */
+    public void removeMember(String name) {
+        protectedRegion.getMembers().removePlayer(name);
+        List<String> members = owners();
+        members.remove(name);
+        database.updateColumn(Column.MEMBERS, ListSerializer.serialise(members));
         updateMembers();
     }
 

@@ -7,11 +7,11 @@ import java.util.List;
 
 @UtilityClass
 public class ListSerializer {
-    public String serialize(List<String> list) {
+    public String serialise(List<String> list) {
         return String.join(";", list);
     }
 
-    public List<String> deserialize(String s) {
+    public List<String> deserialise(String s) {
         return Arrays.asList(s.split(";"));
     }
 }
