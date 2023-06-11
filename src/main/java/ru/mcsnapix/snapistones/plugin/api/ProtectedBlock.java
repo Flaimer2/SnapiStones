@@ -13,19 +13,35 @@ import ru.mcsnapix.snapistones.plugin.util.BlockUtil;
 import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
 @Accessors(fluent = true)
-@Getter
 public class ProtectedBlock {
+    /**
+     * Material of the protected block.
+     */
     @NonNull
+    @Getter
     private final XMaterial blockMaterial;
-    @NonNull
-    private final Location center;
-    @NonNull
-    private final BlockOption blockOption;
-    @NonNull
-    private final Database database;
 
+    /**
+     * Location of the center of the protected block.
+     */
+    @NonNull
+    @Getter
+    private final Location center;
+
+    /**
+     * Block option associated with a protected block.
+     */
+    @NonNull
+    @Getter
+    private final BlockOption blockOption;
+
+    /**
+     * Constructs a new ProtectedBlock instance using the provided region.
+     *
+     * @param region the region containing the protected block
+     */
     public ProtectedBlock(Region region) {
-        database = region.database();
+        Database database = region.database();
         center = LocationSerializer.deserialize(database.getColumnAsString(Column.LOCATION));
         blockMaterial = XMaterial.valueOf(database.getColumnAsString(Column.MATERIAL));
         blockOption = BlockUtil.getBlockOption(blockMaterial);

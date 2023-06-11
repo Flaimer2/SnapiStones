@@ -90,9 +90,9 @@ public class BlockHandler implements Listener {
             }
 
             int maxOwner = Integer.parseInt(NBT.get(itemInHand, nbt -> nbt.getString("maxOwner")));
-            region.setMaxOwners(maxOwner);
+            region.maxOwners(maxOwner);
             int maxMember = Integer.parseInt(NBT.get(itemInHand, nbt -> nbt.getString("maxMember")));
-            region.setMaxMembers(maxMember);
+            region.maxMembers(maxMember);
         }
 
         plugin.callEvent(new RegionCreateEvent(player, region));

@@ -1,0 +1,13 @@
+name: SnapiStones
+version: 1.0.0-alpha
+main: ru.mcsnapix.snapistones.plugin.SnapiStones
+description: Плагин на блоки привата
+authors:
+ - SnapiX
+ - Flaimer
+website: https://mcsnapix.ru
+depend:
+ - WorldEdit
+ - WorldGuard
+softdepend:
+ - DecentHolograms

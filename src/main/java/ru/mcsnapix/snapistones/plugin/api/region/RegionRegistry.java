@@ -20,6 +20,7 @@ public class RegionRegistry {
         return INSTANCE;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public Region getRegion(World world, String id) {
         if (id == null) return null;
         if (!WGRegionUtil.hasRegion(world, id)) return null;

@@ -34,12 +34,12 @@ public class Database {
 
     @SneakyThrows
     public int getColumnAsInt(Column column) {
-        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", regionId);
+        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", id);
     }
 
     @SneakyThrows
     public String getColumnAsString(Column column) {
-        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", regionId);
+        return DB.getFirstColumn("SELECT " + column.getName() + " FROM regions WHERE `region_name` = ?", id);
     }
 
     public List<String> getColumnAsList(Column column) {
@@ -50,11 +50,11 @@ public class Database {
 
     @SneakyThrows
     public void updateColumn(Column column, String value) {
-        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, regionId);
+        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, id);
     }
 
     @SneakyThrows
     public void updateColumn(Column column, int value) {
-        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, regionId);
+        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, id);
     }
 }

@@ -19,6 +19,6 @@ public class SnapApi {
         ProtectedRegion protectedRegion = WGRegionUtil.getRegion(location);
         if (protectedRegion == null) return null;
 
-        return RegionRegistry.get().getRegion(world, protectedRegion.getId());
+        return getRegion(world, protectedRegion.getId());
     }
 }

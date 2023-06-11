@@ -43,8 +43,8 @@ public class RegionExpansion extends PlaceholderExpansion {
         Region region = RegionRegistry.get().getRegion(world, regionName);
         if (region == null) return null;
 
-        ProtectedBlock protectedBlock = region.getProtectedBlock();
-        BlockOption blockOption = region.getProtectedBlock().getBlockOption();
+        ProtectedBlock protectedBlock = region.protectedBlock();
+        BlockOption blockOption = protectedBlock.blockOption();
 
         if (id.equalsIgnoreCase("owners")) return ListSerializer.serialize(region.owners());
         if (id.equalsIgnoreCase("members")) return ListSerializer.serialize(region.members());
@@ -52,12 +52,12 @@ public class RegionExpansion extends PlaceholderExpansion {
         if (id.equalsIgnoreCase("effects")) return ListSerializer.serialize(region.effects());
         if (id.equalsIgnoreCase("hasEffect") && additionalParameter != null)
             return Boolean.toString(region.hasEffect(additionalParameter));
-        if (id.equalsIgnoreCase("activeEffects")) return ListSerializer.serialize(region.getActiveEffects());
+        if (id.equalsIgnoreCase("activeEffects")) return ListSerializer.serialize(region.activeEffects());
         if (id.equalsIgnoreCase("hasActiveEffects")) return Boolean.toString(region.hasActiveEffects());
         if (id.equalsIgnoreCase("hasActiveEffect") && additionalParameter != null)
             return Boolean.toString(region.hasActiveEffect(additionalParameter));
-        if (id.equalsIgnoreCase("location")) return LocationSerializer.serialize(protectedBlock.getCenter());
-        if (id.equalsIgnoreCase("blockMaterial")) return protectedBlock.getBlockMaterial().name();
+        if (id.equalsIgnoreCase("location")) return LocationSerializer.serialize(protectedBlock.center());
+        if (id.equalsIgnoreCase("blockMaterial")) return protectedBlock.blockMaterial().name();
         if (id.equalsIgnoreCase("radius")) return Integer.toString(blockOption.radius());
         if (id.equalsIgnoreCase("formattedRadius")) return blockOption.formatRadius();
 

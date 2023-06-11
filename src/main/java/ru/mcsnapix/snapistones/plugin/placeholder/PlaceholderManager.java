@@ -33,18 +33,18 @@ public class PlaceholderManager {
         value = value.replace("%player_name%", player.getName());
 
         if (region != null) {
-            value = value.replace("%region_id%", region.getId());
+            value = value.replace("%region_id%", region.name());
             value = value.replace("%region_owners%", FormatterUtil.formatPlayerList(region.owners()));
             value = value.replace("%region_members%", FormatterUtil.formatPlayerList(region.members()));
             value = value.replace("%region_owners_size%", Integer.toString(region.owners().size()));
             value = value.replace("%region_members_size%", Integer.toString(region.members().size()));
-            value = value.replace("%region_creation_date%", Integer.toString(region.getDate()));
-            value = value.replace("%region_max_owners%", Integer.toString(region.getMaxOwners()));
-            value = value.replace("%region_max_members%", Integer.toString(region.getMaxMembers()));
+            value = value.replace("%region_creation_date%", Integer.toString(region.date()));
+            value = value.replace("%region_max_owners%", Integer.toString(region.maxOwners()));
+            value = value.replace("%region_max_members%", Integer.toString(region.maxMembers()));
             value = value.replace("%region_has_home%", FormatterUtil.formatPlaceBoolean(region.hasHomeLocation()));
-            ProtectedBlock protectedBlock = region.getProtectedBlock();
-            value = value.replace("%block_material%", protectedBlock.getBlockMaterial().name());
-            value = value.replace("%region_size%", protectedBlock.getBlockOption().formatRadius());
+            ProtectedBlock protectedBlock = region.protectedBlock();
+            value = value.replace("%block_material%", protectedBlock.blockMaterial().name());
+            value = value.replace("%region_size%", protectedBlock.blockOption().formatRadius());
         }
 
         if (otherPlayer != null) {

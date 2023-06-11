@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import ru.mcsnapix.snapistones.plugin.commands.Commands;
 import ru.mcsnapix.snapistones.plugin.handlers.BlockHandler;
+import ru.mcsnapix.snapistones.plugin.handlers.ProtectedBlockHandler;
 import ru.mcsnapix.snapistones.plugin.modules.Modules;
 import ru.mcsnapix.snapistones.plugin.placeholder.RegionExpansion;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;

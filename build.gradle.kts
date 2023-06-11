@@ -12,7 +12,7 @@ shadowJar.apply {
 }
 
 group = "ru.mcsnapix"
-version = "0.0.3-alpha"
+version = "2.0.0-alpha"
 
 repositories {
     mavenCentral()
@@ -92,7 +92,7 @@ tasks {
 
 bukkit {
     name = "SnapiStones"
-    version = "0.0.3-alpha"
+    version = "2.0.0-alpha"
     main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
     description = "Плагин на блоки привата"
     depend = listOf("WorldEdit", "WorldGuard")

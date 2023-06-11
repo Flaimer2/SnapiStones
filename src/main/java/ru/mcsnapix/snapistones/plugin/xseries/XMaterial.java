@@ -67,6 +67,7 @@ import java.util.stream.Collectors;
  * @see Material
  * @see ItemStack
  */
+@SuppressWarnings("all")
 public enum XMaterial {
     ACACIA_BOAT("BOAT_ACACIA"),
     ACACIA_BUTTON("WOOD_BUTTON"),
@@ -2059,7 +2060,7 @@ public enum XMaterial {
                     pattern = Pattern.compile(comp);
                     CACHED_REGEX.put(comp, pattern);
                 } catch (PatternSyntaxException ex) {
-                    SnapiStones.get().log().error("Error syntax regex", ex);
+                    SnapiStones.get().getLog().error("Error syntax regex", ex);
                 }
             }
 

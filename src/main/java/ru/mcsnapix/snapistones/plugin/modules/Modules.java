@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.modules.flags.FlagModule;
-import ru.mcsnapix.snapistones.plugin.modules.hologram.HologramModule;
-import ru.mcsnapix.snapistones.plugin.modules.home.HomeModule;
-import ru.mcsnapix.snapistones.plugin.modules.upgrade.UpgradeModule;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
