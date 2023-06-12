@@ -49,4 +49,8 @@ public class ProtectedBlock {
         blockMaterial = XMaterial.valueOf(database.getColumnAsString(Column.MATERIAL));
         blockOption = BlockUtil.getBlockOption(blockMaterial);
     }
+
+    public String blockMaterialName() {
+        return blockMaterial.name();
+    }
 }

@@ -1,6 +1,7 @@
 package ru.mcsnapix.snapistones.plugin.modules.upgrades;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,12 +13,9 @@ import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.modules.upgrades.config.EffectOptions;
 import ru.mcsnapix.snapistones.plugin.modules.upgrades.config.UpgradeConfig;
 
+@RequiredArgsConstructor
 public class EffectListener implements Listener {
     private final UpgradeConfig upgradeConfig;
-
-    public EffectListener(@NonNull UpgradeModule module) {
-        upgradeConfig = module.upgradeConfig().data();
-    }
 
     @EventHandler
     public void onRegionEnter(RegionEnterEvent event) {
@@ -29,6 +27,7 @@ public class EffectListener implements Listener {
 
         for (String effect : region.activeEffects()) {
             EffectOptions effectOptions = upgradeConfig.effects().get(effect);
+            if (effectOptions == null) continue;
             String effectName = effectOptions.effect();
             int level = effectOptions.level();
 

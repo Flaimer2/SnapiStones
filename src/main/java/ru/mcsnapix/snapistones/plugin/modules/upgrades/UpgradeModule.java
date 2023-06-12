@@ -27,7 +27,7 @@ public class UpgradeModule implements IModule {
                 UpgradeConfig.class,
                 plugin.getOptions()
         );
-        plugin.getServer().getPluginManager().registerEvents(new EffectListener(this), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new EffectListener(upgradeConfig.data()), plugin);
     }
 
     @Override

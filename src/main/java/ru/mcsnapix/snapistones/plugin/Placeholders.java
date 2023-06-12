@@ -15,8 +15,7 @@ import java.util.List;
 
 @Setter
 public class Placeholders {
-    @NonNull
-    private final Player player;
+    private Player player;
     private Region region;
     private OfflinePlayer otherPlayer;
 
@@ -26,6 +25,10 @@ public class Placeholders {
 
     public Placeholders(@NotNull Player player, Region region) {
         this.player = player;
+        this.region = region;
+    }
+
+    public Placeholders(Region region) {
         this.region = region;
     }
 
@@ -49,7 +52,7 @@ public class Placeholders {
             value = value.replace("%region_max_members%", Integer.toString(region.maxMembers()));
             value = value.replace("%region_has_home%", FormatterUtil.formatPlaceBoolean(region.hasHomeLocation()));
             ProtectedBlock protectedBlock = region.protectedBlock();
-            value = value.replace("%block_material%", protectedBlock.blockMaterial().name());
+            value = value.replace("%block_material%", protectedBlock.blockMaterialName());
             value = value.replace("%region_size%", protectedBlock.blockOption().formatRadius());
         }
 

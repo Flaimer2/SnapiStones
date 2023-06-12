@@ -10,6 +10,7 @@ import ru.mcsnapix.snapistones.plugin.api.events.region.RegionEnterEvent;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionLeaveEvent;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.modules.flags.config.FlagConfig;
+import ru.mcsnapix.snapistones.plugin.modules.flags.config.FlagOption;
 
 @AllArgsConstructor
 public class FlagListener implements Listener {
@@ -21,7 +22,9 @@ public class FlagListener implements Listener {
         Region region = event.region();
         ProtectedBlock protectedBlock = region.protectedBlock();
         Placeholders placeholders = new Placeholders(player, region);
-        placeholders.sendMessage(flagConfig.blocks().get(protectedBlock.blockMaterial().name()).greeting());
+        FlagOption flagOption = flagConfig.blocks().get(protectedBlock.blockMaterialName());
+        if (flagOption == null) return;
+        placeholders.sendMessage(flagOption.greeting());
     }
 
     @EventHandler
@@ -30,6 +33,8 @@ public class FlagListener implements Listener {
         Region region = event.region();
         ProtectedBlock protectedBlock = region.protectedBlock();
         Placeholders placeholders = new Placeholders(player, region);
-        placeholders.sendMessage(flagConfig.blocks().get(protectedBlock.blockMaterial().name()).farewell());
+        FlagOption flagOption = flagConfig.blocks().get(protectedBlock.blockMaterialName());
+        if (flagOption == null) return;
+        placeholders.sendMessage(flagOption.farewell());
     }
 }

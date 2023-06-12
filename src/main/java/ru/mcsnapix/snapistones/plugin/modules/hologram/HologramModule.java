@@ -14,23 +14,23 @@ import ru.mcsnapix.snapistones.plugin.settings.Configuration;
 @Getter
 public class HologramModule implements IModule {
     private final Modules modules;
-    private Configuration<HologramConfig> flagConfig;
+    private Configuration<HologramConfig> hologramConfig;
 
     @Override
     public void load() {
         SnapiStones plugin = modules.getPlugin();
-        flagConfig = Configuration.create(plugin,
+        hologramConfig = Configuration.create(plugin,
                 modules.getPathSettings(),
                 "flag.yml",
                 HologramConfig.class,
                 plugin.getOptions()
         );
 
-//        plugin.getServer().getPluginManager().registerEvents(new HologramListener(flagConfig.data()), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new HologramListener(hologramConfig.data()), plugin);
     }
 
     @Override
     public void reload() {
-        flagConfig.reloadConfig();
+        hologramConfig.reloadConfig();
     }
 }

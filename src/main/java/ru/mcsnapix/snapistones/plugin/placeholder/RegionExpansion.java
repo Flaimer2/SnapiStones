@@ -54,7 +54,7 @@ public class RegionExpansion extends PlaceholderExpansion {
         if (id.equalsIgnoreCase("hasActiveEffect") && additionalParameter != null)
             return Boolean.toString(region.hasActiveEffect(additionalParameter));
         if (id.equalsIgnoreCase("location")) return LocationSerializer.serialise(protectedBlock.center());
-        if (id.equalsIgnoreCase("blockMaterial")) return protectedBlock.blockMaterial().name();
+        if (id.equalsIgnoreCase("blockMaterial")) return protectedBlock.blockMaterialName();
         if (id.equalsIgnoreCase("radius")) return Integer.toString(blockOption.radius());
         if (id.equalsIgnoreCase("formattedRadius")) return blockOption.formatRadius();
 
