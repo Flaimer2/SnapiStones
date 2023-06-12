@@ -18,9 +18,6 @@ public interface HomeConfig {
             @ConfDefault.DefaultString("§fНапишите название регион, чтобы туда §aтелепортироваться")
             String writeRegionName();
 
-            @ConfDefault.DefaultString("§fТакого региона §cне существует")
-            String noRegion();
-
             @ConfDefault.DefaultString("§fВы §cне являетесь §fучастником региона")
             String noMember();
 

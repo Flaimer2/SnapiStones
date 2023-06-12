@@ -179,6 +179,11 @@ public class Region {
         updateHomeLocation();
     }
 
+    /**
+     * Teleports the player to the region's home location
+     *
+     * @param player the player to be teleported
+    */
     public void teleportHomeLocation(Player player) {
         Placeholders placeholders = new Placeholders(player, this);
         HomeConfig homeConfig = SnapiStones.get().getModules().home().homeConfig().data();

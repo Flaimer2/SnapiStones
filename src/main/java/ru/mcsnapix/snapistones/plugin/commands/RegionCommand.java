@@ -102,6 +102,7 @@ public class RegionCommand extends BaseCommand {
 
         String id = args[0];
         Region region = SnapApi.getRegion(id);
+        placeholders.setRegion(region);
 
         if (region == null) {
             placeholders.sendMessage(message.regionNotExist());
@@ -159,6 +160,7 @@ public class RegionCommand extends BaseCommand {
 
         String id = args[0];
         Region region = SnapApi.getRegion(id);
+        placeholders.setRegion(region);
 
         if (region == null) {
             placeholders.sendMessage(message.regionNotExist());
@@ -218,6 +220,7 @@ public class RegionCommand extends BaseCommand {
 
         String id = args[0];
         Region region = SnapApi.getRegion(id);
+        placeholders.setRegion(region);
 
         if (region == null) {
             placeholders.sendMessage(message.regionNotExist());
@@ -272,63 +275,57 @@ public class RegionCommand extends BaseCommand {
     public void onSetHome(Player player, String[] ignoredArgs) {
         HomeConfig config = modules.home().homeConfig().data();
         Region region = SnapApi.getRegion(player.getLocation());
+        Placeholders placeholders = new Placeholders(player, region);
 
         if (region == null) {
-            player.sendMessage(config.commands().setHome().notInRegion());
+            placeholders.sendMessage(config.commands().setHome().notInRegion());
             return;
         }
 
-        Placeholders placeholders = new Placeholders(player);
-//
-//        SnapPlayer snapPlayer = SnapAPI.player(player, region);
-//
-//        if (!snapPlayer.hasOwnerInRegion()) {
-//            snapPlayer.sendMessage(config.commands().setHome().notOwner());
-//            return;
-//        }
-//
-//        home.homeManager(snapPlayer).add(player.getLocation());
-//        player.sendMessage(config.commands().setHome().success());
+        if (!region.hasOwnerInRegion(player.getName())) {
+            placeholders.sendMessage(config.commands().setHome().notOwner());
+            return;
+        }
+
+        region.homeLocation(player.getLocation());
+        placeholders.sendMessage(config.commands().setHome().success());
     }
 
     @Subcommand("home")
     @CommandCompletion("@regionhomelistbyplayer")
     public void onHome(Player player, String[] args) {
-        HomeModule home = plugin.module().home();
-        HomeConfig config = home.homeConfig().data();
-        SnapPlayer snapPlayer = SnapAPI.player(player);
-
-        List<ProtectedRegion> regionList = snapPlayer.memberRegions().stream().filter(r -> new Database(r).hasRegion()).collect(Collectors.toList());
-        int count = regionList.size();
+        HomeConfig config = modules.home().homeConfig().data();
+        List<Region> regionWithHomeList = SnapApi.getRegionsByPlayer(player.getName()).stream().filter(Region::hasHomeLocation).collect(Collectors.toList());
+        int count = regionWithHomeList.size();
 
         if (count == 1) {
-            snapPlayer = SnapAPI.player(player, regionList.get(0));
-            HomeManager homeManager = home.homeManager(snapPlayer);
-
-            homeManager.teleport();
+            Region region = regionWithHomeList.get(0);
+            region.teleportHomeLocation(player);
             return;
         }
 
+        Placeholders placeholders = new Placeholders(player);
+
         if (args.length == 0) {
-            snapPlayer.sendMessage(config.commands().home().writeRegionName());
+            placeholders.sendMessage(config.commands().home().writeRegionName());
             return;
         }
 
         String id = args[0];
-        if (!hasRegion(snapPlayer, id)) {
+        Region region = SnapApi.getRegion(id);
+        placeholders.setRegion(region);
+
+        if (region == null) {
+            placeholders.sendMessage(message.regionNotExist());
             return;
         }
 
-        ProtectedRegion region = snapPlayer.regionUtil().getRegion(id);
-        snapPlayer = SnapAPI.player(player, region);
-        HomeManager homeManager = home.homeManager(snapPlayer);
-
-        if (!snapPlayer.hasPlayerInRegion()) {
-            snapPlayer.sendMessage(config.commands().home().noMember());
+        if (!region.hasPlayerInRegion(player.getName())) {
+            placeholders.sendMessage(config.commands().home().noMember());
             return;
         }
 
-        homeManager.teleport();
+        region.teleportHomeLocation(player);
     }
     // ! MODULE HOME END
 

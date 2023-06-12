@@ -10,7 +10,8 @@ import org.bukkit.event.Listener;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 
 /**
- * Represents an {@link Event} that can be listened to with the {@link Listener} class, which sends the {@link Player}, {@link Region}
+ * Represents an {@link Event} that can be listened to with the {@link Listener} class,
+ * which sends the {@link Player}, {@link Region}
  */
 @RequiredArgsConstructor
 @Accessors(fluent = true)

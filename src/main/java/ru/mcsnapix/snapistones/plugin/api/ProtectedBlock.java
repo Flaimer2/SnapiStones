@@ -12,6 +12,9 @@ import ru.mcsnapix.snapistones.plugin.settings.config.block.BlockOption;
 import ru.mcsnapix.snapistones.plugin.util.BlockUtil;
 import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
+/**
+ * It is a block that protects a certain radius
+ */
 @Accessors(fluent = true)
 public class ProtectedBlock {
     /**

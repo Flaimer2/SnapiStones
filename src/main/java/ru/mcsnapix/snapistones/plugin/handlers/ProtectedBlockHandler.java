@@ -59,10 +59,8 @@ public class ProtectedBlockHandler implements Listener {
         if (player == null) return;
         if (!region.hasPlayerInRegion(player.getName())) return;
 
-        boolean owner = region.hasOwnerInRegion(player.getName());
-
         ClickAction clickAction = ClickAction.getClickAction(player, action);
-        plugin.callEvent(new BlockInteractEvent(player, clickAction, region, owner));
+        plugin.callEvent(new BlockInteractEvent(player, clickAction, region));
     }
 
     @EventHandler
