@@ -1,11 +1,12 @@
 package ru.mcsnapix.snapistones.plugin.modules.hologram.config;
 
-import static space.arim.dazzleconf.annote.ConfDefault.DefaultObject;
 import space.arim.dazzleconf.annote.SubSection;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static space.arim.dazzleconf.annote.ConfDefault.DefaultObject;
 
 public interface HologramConfig {
     @SuppressWarnings("unused") // used by DazzleConf

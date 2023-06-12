@@ -15,7 +15,6 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
-import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
 import ru.mcsnapix.snapistones.plugin.commands.Commands;
 import ru.mcsnapix.snapistones.plugin.handlers.BlockHandler;
@@ -31,6 +30,7 @@ import ru.mcsnapix.snapistones.plugin.settings.config.block.BlockConfig;
 import ru.mcsnapix.snapistones.plugin.settings.message.Message;
 import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 import space.arim.dazzleconf.ConfigurationOptions;
+import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 @Getter
 public final class SnapiStones extends JavaPlugin {
@@ -56,12 +56,12 @@ public final class SnapiStones extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         loadWorldGuard();
         loadConfigs();
+        modules = new Modules();
         commands = new Commands();
         adventure = BukkitAudiences.create(this);
         enableMySQL();
         registerHandlers(pluginManager);
         registerListeners(pluginManager);
-        modules = new Modules();
         if (isPluginEnable("PlaceholderAPI")) {
             new RegionExpansion().register();
         }
@@ -94,6 +94,7 @@ public final class SnapiStones extends JavaPlugin {
     private void loadConfigs() {
         options = new ConfigurationOptions.Builder()
                 .setCreateSingleElementCollections(true)
+                .sorter(new AnnotationBasedSorter())
                 .build();
         mainConfig = Configuration.create(plugin, "config.yml", MainConfig.class, options);
         mysqlConfig = Configuration.create(plugin, "mysql.yml", MySQLConfig.class, options);
@@ -163,7 +164,6 @@ public final class SnapiStones extends JavaPlugin {
 
             for (ProtectedRegion region : WGRegionUtil.getRegions(world)) {
                 if (config.disableRegion().contains(region.getId())) continue;
-
                 RegionRegistry.get().addRegion(region.getId(), region);
             }
         }

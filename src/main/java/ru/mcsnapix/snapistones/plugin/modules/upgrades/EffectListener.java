@@ -1,6 +1,5 @@
 package ru.mcsnapix.snapistones.plugin.modules.upgrades;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

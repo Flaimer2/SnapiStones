@@ -45,6 +45,12 @@ public interface Message {
     @SubSection
     RegionInfo regionInfo();
 
+    @SubSection
+    RegionList regionList();
+
+    @SubSection
+    Command command();
+
     interface RegionInfo {
         @DefaultString("§fИспользуйте: §a/rg info регион")
         String usage();
@@ -62,9 +68,6 @@ public interface Message {
         List<String> message();
     }
 
-    @SubSection
-    RegionList regionList();
-
     interface RegionList {
         @DefaultString("<newline>  <aqua><b>Список регионов</b></aqua><newline>       ")
         String header();
@@ -75,9 +78,6 @@ public interface Message {
         @DefaultString("  <white>У вас <red>нет <white>регионов")
         String noRegion();
     }
-
-    @SubSection
-    Command command();
 
     interface Command {
         @DefaultString("§fИгрока с таким ником §cне существует")
@@ -92,6 +92,12 @@ public interface Message {
         @SubSection
         CommandRemove remove();
 
+        @SubSection
+        CommandAddMember addMember();
+
+        @SubSection
+        CommandAddOwner addOwner();
+
         interface CommandRemove {
             @DefaultString("§fИспользуйте: §a/rg remove регион игрок")
             String usage();
@@ -102,12 +108,9 @@ public interface Message {
             @DefaultString("§fВы §cне можете §fудалить себя")
             String cannotRemoveSelf();
 
-            @DefaultString("§fВы успешно §cудалили §fигрока &a%another_player_name%")
+            @DefaultString("§fВы успешно §cудалили §fигрока &a%other_player_name%")
             String success();
         }
-
-        @SubSection
-        CommandAddMember addMember();
 
         interface CommandAddMember {
             @DefaultString("§fИспользуйте: §a/rg addmember регион игрок")
@@ -119,12 +122,9 @@ public interface Message {
             @DefaultString("§fВы §cне можете §fдобавить себя")
             String cannotAddSelf();
 
-            @DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
+            @DefaultString("§fВы успешно §aдобавили §fигрока &a%other_player_name%")
             String success();
         }
-
-        @SubSection
-        CommandAddOwner addOwner();
 
         interface CommandAddOwner {
             @DefaultString("§fИспользуйте: §a/rg addowner регион игрок")
@@ -136,7 +136,7 @@ public interface Message {
             @DefaultString("§fВы §cне можете §fдобавить себя")
             String cannotAddSelf();
 
-            @DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
+            @DefaultString("§fВы успешно §aдобавили §fигрока &a%other_player_name%")
             String success();
         }
     }

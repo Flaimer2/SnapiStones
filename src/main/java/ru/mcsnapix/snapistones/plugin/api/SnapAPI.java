@@ -7,6 +7,7 @@ import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
 import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,18 +16,17 @@ public class SnapApi {
     private final RegionRegistry regionRegistry = RegionRegistry.get();
 
     public Region getRegion(String id) {
-        return regionRegistry.getRegion(id);
+        return regionRegistry.getRegion(id.toLowerCase());
     }
 
     public Region getRegion(Location location) {
         ProtectedRegion protectedRegion = WGRegionUtil.getRegion(location);
         if (protectedRegion == null) return null;
-
         return getRegion(protectedRegion.getId());
     }
 
     public List<Region> getRegions() {
-        return (List<Region>) regionRegistry.getRegionMap().values();
+        return new ArrayList<>(regionRegistry.getRegionMap().values());
     }
 
     public List<Region> getRegionsByPlayer(String player) {

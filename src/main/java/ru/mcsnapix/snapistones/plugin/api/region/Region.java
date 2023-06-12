@@ -15,6 +15,7 @@ import ru.mcsnapix.snapistones.plugin.database.Database;
 import ru.mcsnapix.snapistones.plugin.modules.home.config.HomeConfig;
 import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
 import ru.mcsnapix.snapistones.plugin.serializers.LocationSerializer;
+import ru.mcsnapix.snapistones.plugin.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,8 @@ public class Region {
 
     @Getter
     private final int date;
+    @Getter
+    private final String author;
     @NonNull
     @Getter
     private final ProtectedBlock protectedBlock;
@@ -61,6 +64,7 @@ public class Region {
         this.protectedRegion = protectedRegion;
         this.database = new Database(id);
         date = database.getColumnAsInt(Column.DATE);
+        author = database.getColumnAsString(Column.AUTHOR);
         protectedBlock = new ProtectedBlock(this);
     }
 
@@ -99,7 +103,7 @@ public class Region {
      * @return true if the player is an owner, false otherwise
      */
     public boolean hasOwnerInRegion(String name) {
-        return owners.contains(name);
+        return Util.ignoreCaseContains(owners(), name);
     }
 
     /**
@@ -128,7 +132,7 @@ public class Region {
      * @return true if the player is a member, false otherwise
      */
     public boolean hasMemberInRegion(String name) {
-        return members.contains(name);
+        return Util.ignoreCaseContains(members(), name);
     }
 
     /**
@@ -147,9 +151,6 @@ public class Region {
      * @return the home location of the region
      */
     public Location homeLocation() {
-        if (homeLocation == null) {
-            updateHomeLocation();
-        }
         return homeLocation;
     }
 
@@ -183,7 +184,7 @@ public class Region {
      * Teleports the player to the region's home location
      *
      * @param player the player to be teleported
-    */
+     */
     public void teleportHomeLocation(Player player) {
         Placeholders placeholders = new Placeholders(player, this);
         HomeConfig homeConfig = SnapiStones.get().getModules().home().homeConfig().data();
@@ -223,7 +224,7 @@ public class Region {
      * @return true if the region has the effect, false otherwise
      */
     public boolean hasEffect(String effect) {
-        return effects().contains(effect);
+        return Util.ignoreCaseContains(effects(), effect);
     }
 
     /**
@@ -271,7 +272,7 @@ public class Region {
      * @return true if the region has the active effect, false otherwise
      */
     public boolean hasActiveEffect(String effect) {
-        return activeEffects().contains(effect);
+        return Util.ignoreCaseContains(activeEffects(), effect);
     }
 
     /**

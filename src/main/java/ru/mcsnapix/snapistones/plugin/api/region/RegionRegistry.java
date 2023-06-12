@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RegionRegistry {
     private static RegionRegistry INSTANCE;
-    @Getter private final Map<String, Region> regionMap = new ConcurrentHashMap<>();
+    @Getter
+    private final Map<String, Region> regionMap = new ConcurrentHashMap<>();
 
     private RegionRegistry() {
     }

@@ -2,6 +2,9 @@ package ru.mcsnapix.snapistones.plugin.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import com.alessiodp.lastloginapi.api.LastLogin;
+import com.alessiodp.lastloginapi.api.interfaces.LastLoginAPI;
+import com.alessiodp.lastloginapi.api.interfaces.LastLoginPlayer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -10,13 +13,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.Placeholders;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
-import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
-import ru.mcsnapix.snapistones.plugin.database.Database;
 import ru.mcsnapix.snapistones.plugin.modules.Modules;
-import ru.mcsnapix.snapistones.plugin.modules.home.HomeModule;
 import ru.mcsnapix.snapistones.plugin.modules.home.config.HomeConfig;
 import ru.mcsnapix.snapistones.plugin.modules.upgrades.config.UpgradeConfig;
 import ru.mcsnapix.snapistones.plugin.settings.message.Message;
@@ -28,12 +27,14 @@ import java.util.stream.Collectors;
 
 @CommandAlias("rg|region")
 public class RegionCommand extends BaseCommand {
+    private final LastLoginAPI lastLoginAPI = LastLogin.getApi();
     private final SnapiStones plugin = SnapiStones.get();
     private final Message message = plugin.getMessage().data();
     private final Modules modules = plugin.getModules();
 
     @Subcommand("info")
     @CommandCompletion("@regionlist")
+    @SuppressWarnings("unused") // Used by ACF
     public void onInfo(Player player, String[] args) {
         Placeholders placeholders = new Placeholders(player);
         Region region;
@@ -51,7 +52,7 @@ public class RegionCommand extends BaseCommand {
         region = SnapApi.getRegion(id);
 
         if (region == null) {
-            placeholders.sendMessage(message.regionNotExist());
+            placeholders.sendMessage(message.regionNotExist().replace("%region_id%", id));
             return;
         }
 
@@ -60,12 +61,13 @@ public class RegionCommand extends BaseCommand {
 
     @Subcommand("list")
     @CommandCompletion("@regionlistbyplayer")
+    @SuppressWarnings("unused") // Used by ACF
     public void onList(Player player) {
         Audience p = plugin.adventure().player(player);
         StringBuilder s = new StringBuilder();
         Component header = MiniMessage.miniMessage().deserialize(message.regionList().header());
         p.sendMessage(header);
-        Iterator<Region> iterator = SnapApi.getRegionsByMember(player.getName()).iterator();
+        Iterator<Region> iterator = SnapApi.getRegionsByPlayer(player.getName()).iterator();
         int count = 0;
         while (iterator.hasNext()) {
             count++;
@@ -89,7 +91,8 @@ public class RegionCommand extends BaseCommand {
     }
 
     @Subcommand("remove")
-    @CommandCompletion("@regionlistbyowner @players")
+    @CommandCompletion("@regionlistbyowner @playerinregion")
+    @SuppressWarnings("unused") // Used by ACF
     public void onRemove(Player player, String[] args) {
         Placeholders placeholders = new Placeholders(player);
         var command = message.command();
@@ -105,7 +108,7 @@ public class RegionCommand extends BaseCommand {
         placeholders.setRegion(region);
 
         if (region == null) {
-            placeholders.sendMessage(message.regionNotExist());
+            placeholders.sendMessage(message.regionNotExist().replace("%region_id%", id));
             return;
         }
 
@@ -124,6 +127,12 @@ public class RegionCommand extends BaseCommand {
 
         if (name.equalsIgnoreCase(player.getName())) {
             placeholders.sendMessage(removeCommand.cannotRemoveSelf());
+            return;
+        }
+
+        LastLoginPlayer lastLoginPlayer = lastLoginAPI.getPlayerByName(name).stream().findFirst().orElse(null);
+        if (lastLoginPlayer == null) {
+            placeholders.sendMessage(command.playerNotFound());
             return;
         }
 
@@ -148,6 +157,7 @@ public class RegionCommand extends BaseCommand {
 
     @Subcommand("addmember")
     @CommandCompletion("@regionlistbyowner @players")
+    @SuppressWarnings("unused") // Used by ACF
     public void onAddMember(Player player, String[] args) {
         Placeholders placeholders = new Placeholders(player);
         var command = message.command();
@@ -163,7 +173,7 @@ public class RegionCommand extends BaseCommand {
         placeholders.setRegion(region);
 
         if (region == null) {
-            placeholders.sendMessage(message.regionNotExist());
+            placeholders.sendMessage(message.regionNotExist().replace("%region_id%", id));
             return;
         }
 
@@ -190,6 +200,12 @@ public class RegionCommand extends BaseCommand {
             return;
         }
 
+        LastLoginPlayer lastLoginPlayer = lastLoginAPI.getPlayerByName(name).stream().findFirst().orElse(null);
+        if (lastLoginPlayer == null) {
+            placeholders.sendMessage(command.playerNotFound());
+            return;
+        }
+
         // ! MODULE UPGRADE
         UpgradeConfig upgradeConfig = modules.upgrade().upgradeConfig().data();
 
@@ -208,6 +224,7 @@ public class RegionCommand extends BaseCommand {
 
     @Subcommand("addowner")
     @CommandCompletion("@regionlistbyowner @players")
+    @SuppressWarnings("unused") // Used by ACF
     public void onAddOwner(Player player, String[] args) {
         Placeholders placeholders = new Placeholders(player);
         var command = message.command();
@@ -223,7 +240,7 @@ public class RegionCommand extends BaseCommand {
         placeholders.setRegion(region);
 
         if (region == null) {
-            placeholders.sendMessage(message.regionNotExist());
+            placeholders.sendMessage(message.regionNotExist().replace("%region_id%", id));
             return;
         }
 
@@ -254,6 +271,12 @@ public class RegionCommand extends BaseCommand {
             region.removeMember(name);
         }
 
+        LastLoginPlayer lastLoginPlayer = lastLoginAPI.getPlayerByName(name).stream().findFirst().orElse(null);
+        if (lastLoginPlayer == null) {
+            placeholders.sendMessage(command.playerNotFound());
+            return;
+        }
+
         // ! MODULE UPGRADE
         UpgradeConfig upgradeConfig = modules.upgrade().upgradeConfig().data();
 
@@ -272,6 +295,7 @@ public class RegionCommand extends BaseCommand {
 
     // ! MODULE HOME START
     @Subcommand("sethome")
+    @SuppressWarnings("unused") // Used by ACF
     public void onSetHome(Player player, String[] ignoredArgs) {
         HomeConfig config = modules.home().homeConfig().data();
         Region region = SnapApi.getRegion(player.getLocation());
@@ -293,6 +317,7 @@ public class RegionCommand extends BaseCommand {
 
     @Subcommand("home")
     @CommandCompletion("@regionhomelistbyplayer")
+    @SuppressWarnings("unused") // Used by ACF
     public void onHome(Player player, String[] args) {
         HomeConfig config = modules.home().homeConfig().data();
         List<Region> regionWithHomeList = SnapApi.getRegionsByPlayer(player.getName()).stream().filter(Region::hasHomeLocation).collect(Collectors.toList());
@@ -316,7 +341,7 @@ public class RegionCommand extends BaseCommand {
         placeholders.setRegion(region);
 
         if (region == null) {
-            placeholders.sendMessage(message.regionNotExist());
+            placeholders.sendMessage(message.regionNotExist().replace("%region_id%", id));
             return;
         }
 
@@ -331,6 +356,7 @@ public class RegionCommand extends BaseCommand {
 
     @Default
     @HelpCommand
+    @SuppressWarnings("unused") // Used by ACF
     public void onHelp(CommandSender sender) {
         sender.sendMessage(message.help().toArray(new String[0]));
     }

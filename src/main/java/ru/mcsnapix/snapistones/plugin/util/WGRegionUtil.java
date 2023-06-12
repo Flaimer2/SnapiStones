@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @UtilityClass
 public class WGRegionUtil {
@@ -32,6 +31,7 @@ public class WGRegionUtil {
     }
 
     public @Nullable ProtectedRegion getRegion(Location location) {
+        if (!config.enableWorld().contains(location.getWorld().getName())) return null;
         ApplicableRegionSet set = worldGuard.getRegionContainer().createQuery()
                 .getApplicableRegions(location);
         ProtectedRegion rg = null;
@@ -39,6 +39,9 @@ public class WGRegionUtil {
         for (ProtectedRegion region : set) {
             rg = region;
         }
+
+        if (rg == null) return null;
+        if (config.disableRegion().contains(rg.getId())) return null;
 
         return rg;
     }
@@ -81,7 +84,7 @@ public class WGRegionUtil {
     public String createRegionID(RegionManager regionManager, Player player, String symbol) {
         LocalPlayer localPlayer = getLocalPlayer(player);
         int regionCount = regionManager.getRegionCountOfPlayer(localPlayer) + 1;
-        return player.getName() + "_" + symbol + regionCount;
+        return (player.getName() + "_" + symbol + regionCount).toLowerCase();
     }
 
     public LocalPlayer getLocalPlayer(Player player) {

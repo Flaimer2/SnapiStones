@@ -1,15 +1,19 @@
 package ru.mcsnapix.snapistones.plugin.commands;
 
 import co.aikar.commands.PaperCommandManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.alessiodp.lastloginapi.api.LastLogin;
+import com.alessiodp.lastloginapi.api.interfaces.LastLoginAPI;
 import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Commands {
+    private final LastLoginAPI lastLoginAPI = LastLogin.getApi();
     private final SnapiStones plugin = SnapiStones.get();
     private final PaperCommandManager manager;
 
@@ -20,6 +24,18 @@ public class Commands {
     }
 
     private void registerCommandCompletions() {
+        manager.getCommandCompletions().registerAsyncCompletion("playerinregion", c -> {
+            Player player = c.getPlayer();
+            List<String> players = new ArrayList<>();
+            for (Region region : SnapApi.getRegionsByOwner(player.getName())) {
+                players.addAll(region.members());
+                players.addAll(region.owners());
+            }
+            players.remove(player.getName());
+
+            return players;
+        });
+
         manager.getCommandCompletions().registerAsyncCompletion("regionlistbyowner", c -> {
             Player player = c.getPlayer();
 

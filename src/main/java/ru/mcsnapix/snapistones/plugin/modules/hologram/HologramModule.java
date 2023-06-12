@@ -21,7 +21,7 @@ public class HologramModule implements IModule {
         SnapiStones plugin = modules.getPlugin();
         hologramConfig = Configuration.create(plugin,
                 modules.getPathSettings(),
-                "flag.yml",
+                "hologram.yml",
                 HologramConfig.class,
                 plugin.getOptions()
         );

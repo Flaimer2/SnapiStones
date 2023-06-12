@@ -1,7 +1,6 @@
 package ru.mcsnapix.snapistones.plugin.modules.flags;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;

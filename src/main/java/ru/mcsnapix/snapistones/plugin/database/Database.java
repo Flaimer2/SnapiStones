@@ -5,21 +5,21 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
-import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
+import ru.mcsnapix.snapistones.plugin.serializers.LocationSerializer;
 
 import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class Database {
-    private final SnapiStones plugin = SnapiStones.get();
     @NonNull
     private final String id;
 
+    @SneakyThrows
     public void createRegion(String owner, Location location, String material) {
-        DB.executeUpdateAsync("INSERT INTO regions (region_name, owners_name, creation_date, block_location, block_material) VALUES (?,?,UNIX_TIMESTAMP(),?)",
-                id, owner, location, material);
+        DB.executeUpdate("INSERT INTO regions (region_name, owners_name, region_author, creation_date, block_location, block_material) VALUES (?,?,?,UNIX_TIMESTAMP(),?,?)",
+                id, owner, owner, LocationSerializer.serialise(location), material);
     }
 
     public void removeRegion() {

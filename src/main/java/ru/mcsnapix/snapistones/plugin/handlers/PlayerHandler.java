@@ -52,16 +52,36 @@ public class PlayerHandler implements Listener {
         Region currentRegion = SnapApi.getRegion(location);
         Region previousRegion = isOnABase.get(player);
 
-        if (previousRegion != null) {
-            triggerRegionEvent(player, previousRegion, EventType.LEAVE);
-            triggerRegionEvent(player, currentRegion, EventType.ENTER);
-            isOnABase.replace(player, currentRegion);
-        } else if (currentRegion != null) {
-            triggerRegionEvent(player, currentRegion, EventType.ENTER);
-            isOnABase.put(player, currentRegion);
+        if (currentRegion != null) {
+            if (previousRegion != null) {
+                if (currentRegion != previousRegion) {
+                    triggerRegionEvent(player, previousRegion, EventType.LEAVE);
+                    triggerRegionEvent(player, currentRegion, EventType.ENTER);
+                    isOnABase.replace(player, currentRegion);
+                }
+            } else {
+                triggerRegionEvent(player, currentRegion, EventType.ENTER);
+                isOnABase.put(player, currentRegion);
+            }
         } else {
-            isOnABase.remove(player);
+            if (previousRegion != null) {
+                triggerRegionEvent(player, previousRegion, EventType.LEAVE);
+                isOnABase.remove(player);
+            }
         }
+
+//        if (currentRegion == null && previousRegion == null) {
+//            isOnABase.remove(player);
+//        } else {
+//            triggerRegionEvent(player, currentRegion, EventType.ENTER);
+//            isOnABase.put(player, currentRegion);
+//        }
+//
+//        if (previousRegion != null) {
+//            triggerRegionEvent(player, previousRegion, EventType.LEAVE);
+//            triggerRegionEvent(player, currentRegion, EventType.ENTER);
+//            isOnABase.replace(player, currentRegion);
+//        }
     }
 
     private void triggerRegionEvent(Player player, Region region, EventType eventType) {

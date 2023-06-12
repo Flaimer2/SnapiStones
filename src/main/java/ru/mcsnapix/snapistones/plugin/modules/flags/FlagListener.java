@@ -22,6 +22,7 @@ public class FlagListener implements Listener {
         Region region = event.region();
         ProtectedBlock protectedBlock = region.protectedBlock();
         Placeholders placeholders = new Placeholders(player, region);
+        placeholders.setOtherPlayer(region.author());
         FlagOption flagOption = flagConfig.blocks().get(protectedBlock.blockMaterialName());
         if (flagOption == null) return;
         placeholders.sendMessage(flagOption.greeting());
@@ -33,6 +34,7 @@ public class FlagListener implements Listener {
         Region region = event.region();
         ProtectedBlock protectedBlock = region.protectedBlock();
         Placeholders placeholders = new Placeholders(player, region);
+        placeholders.setOtherPlayer(region.author());
         FlagOption flagOption = flagConfig.blocks().get(protectedBlock.blockMaterialName());
         if (flagOption == null) return;
         placeholders.sendMessage(flagOption.farewell());

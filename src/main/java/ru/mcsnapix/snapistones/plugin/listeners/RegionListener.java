@@ -54,7 +54,7 @@ public class RegionListener implements Listener {
         Placeholders placeholders = new Placeholders(player, region);
 
         center.getNearbyPlayers(6).forEach(p ->
-                        p.playSound(center, Sound.valueOf(blockOption.breakSound()), 1.0F, 1.0F)
+                p.playSound(center, Sound.valueOf(blockOption.breakSound()), 1.0F, 1.0F)
         );
         placeholders.sendMessage(message.protectedBlockBroken());
         RegionRegistry.get().removeRegion(region.name());

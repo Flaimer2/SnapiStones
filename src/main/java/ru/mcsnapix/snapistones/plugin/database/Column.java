@@ -1,6 +1,7 @@
 package ru.mcsnapix.snapistones.plugin.database;
 
 public enum Column {
+    AUTHOR("region_author"),
     OWNERS("owners_name"),
     MEMBERS("members_name"),
     DATE("creation_date"),

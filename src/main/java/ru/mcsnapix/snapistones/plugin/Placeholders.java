@@ -1,6 +1,5 @@
 package ru.mcsnapix.snapistones.plugin;
 
-import lombok.NonNull;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,7 +38,9 @@ public class Placeholders {
     }
 
     public String replacePlaceholders(String value) {
-        value = value.replace("%player_name%", player.getName());
+        if (player != null) {
+            value = value.replace("%player_name%", player.getName());
+        }
 
         if (region != null) {
             value = value.replace("%region_id%", region.name());

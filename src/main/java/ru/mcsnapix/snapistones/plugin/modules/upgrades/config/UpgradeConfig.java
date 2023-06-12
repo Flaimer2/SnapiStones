@@ -1,7 +1,5 @@
 package ru.mcsnapix.snapistones.plugin.modules.upgrades.config;
 
-import static space.arim.dazzleconf.annote.ConfDefault.DefaultString;
-import static space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 
@@ -9,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static space.arim.dazzleconf.annote.ConfDefault.DefaultObject;
+import static space.arim.dazzleconf.annote.ConfDefault.*;
 
 public interface UpgradeConfig {
     @SuppressWarnings("unused") // used by DazzleConf

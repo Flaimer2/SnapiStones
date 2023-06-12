@@ -27,6 +27,7 @@ repositories {
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.alessiodp.com/releases/")
 }
 
 dependencies {
@@ -39,6 +40,7 @@ dependencies {
     compileOnly("com.google.code.gson:gson:2.8.9")
     compileOnly("com.sk89q.worldguard:worldguard-legacy:6.2")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:6.1.3-SNAPSHOT")
+    compileOnly("com.alessiodp.lastloginapi:lastloginapi-api:1.7.4")
     // Module Hologram
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.1")
     compileOnly("me.clip:placeholderapi:2.11.3")
@@ -95,8 +97,8 @@ bukkit {
     version = "2.0.0-alpha"
     main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
     description = "Плагин на блоки привата"
-    depend = listOf("WorldEdit", "WorldGuard")
-    softDepend = listOf("PlaceholderAPI", "DecentHolograms")
+    depend = listOf("WorldEdit", "WorldGuard", "DecentHolograms", "LastLoginAPI")
+    softDepend = listOf("PlaceholderAPI")
     website = "https://mcsnapix.ru"
     authors = listOf("SnapiX", "Flaimer")
 }

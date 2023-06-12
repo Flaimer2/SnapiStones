@@ -59,8 +59,7 @@ public class BlockHandler implements Listener {
         if (!BlockUtil.hasBlockOption(xMaterial)) return;
         if (!config.enableWorld().contains(world.getName())) return;
         if (player.isSneaking()) return;
-        if (worldGuard.createProtectionQuery().testBlockPlace(player, block.getLocation(), block.getType())) return;
-
+        if (!worldGuard.createProtectionQuery().testBlockPlace(player, block.getLocation(), block.getType())) return;
         BlockOption blockOption = BlockUtil.getBlockOption(xMaterial);
         RegionManager regionManager = worldGuard.getRegionManager(world);
 
@@ -93,10 +92,14 @@ public class BlockHandler implements Listener {
                 region.setEffects(effect);
             }
 
-            int maxOwner = Integer.parseInt(NBT.get(itemInHand, nbt -> nbt.getString("maxOwner")));
-            region.maxOwners(maxOwner);
-            int maxMember = Integer.parseInt(NBT.get(itemInHand, nbt -> nbt.getString("maxMember")));
-            region.maxMembers(maxMember);
+            String maxOwner = NBT.get(itemInHand, nbt -> nbt.getString("maxOwner"));
+            if (!maxOwner.isEmpty()) {
+                region.maxOwners(Integer.parseInt(maxOwner));
+            }
+            String maxMember = NBT.get(itemInHand, nbt -> nbt.getString("maxMember"));
+            if (!maxMember.isEmpty()) {
+                region.maxMembers(Integer.parseInt(maxMember));
+            }
         }
 
         plugin.callEvent(new RegionCreateEvent(player, region));
