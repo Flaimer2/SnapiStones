@@ -45,6 +45,7 @@ public class SnapApi {
         Region region = SnapApi.getRegion(location);
         if (region == null) return false;
         ProtectedBlock protectedBlock = region.protectedBlock();
-        return protectedBlock.center() == location;
+
+        return protectedBlock.center().equals(location.getBlock().getLocation());
     }
 }

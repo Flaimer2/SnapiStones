@@ -22,8 +22,9 @@ public class Database {
                 id, owner, owner, LocationSerializer.serialise(location), material);
     }
 
+    @SneakyThrows
     public void removeRegion() {
-        DB.executeUpdateAsync("DELETE FROM regions WHERE `region_name` = ?",
+        DB.executeUpdate("DELETE FROM regions WHERE `region_name` = ?",
                 id);
     }
 
@@ -50,11 +51,11 @@ public class Database {
 
     @SneakyThrows
     public void updateColumn(Column column, String value) {
-        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, id);
+        DB.executeUpdate("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, id);
     }
 
     @SneakyThrows
     public void updateColumn(Column column, int value) {
-        DB.executeUpdateAsync("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, id);
+        DB.executeUpdate("UPDATE regions SET " + column.getName() + " = ? WHERE region_name = ?", value, id);
     }
 }

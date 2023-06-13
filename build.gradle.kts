@@ -76,8 +76,8 @@ tasks {
         relocateDependency("org.yaml")
         relocateDependency("com.zaxxer")
         relocateDependency("de.tr7zw")
+        relocateDependency("co.aikar.idb")
         relocate("co.aikar.commands", "$libraryPackage.acf")
-        relocate("co.aikar.idb", "$libraryPackage.idb")
         relocate("co.aikar.locales", "$libraryPackage.locales")
     }
 

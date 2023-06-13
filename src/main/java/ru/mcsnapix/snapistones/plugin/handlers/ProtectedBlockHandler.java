@@ -19,7 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import ru.mcsnapix.snapistones.plugin.ClickAction;
 import ru.mcsnapix.snapistones.plugin.ReplacedList;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
 import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.events.block.BlockInteractEvent;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionRemoveEvent;
@@ -80,9 +79,7 @@ public class ProtectedBlockHandler implements Listener {
 
         Player player = event.getPlayer();
         if (player == null) return;
-        if (!region.hasOwnerInRegion(player.getName())) {
-            return;
-        }
+        if (!region.hasOwnerInRegion(player.getName())) return;
 
         block.setType(Material.AIR);
 
@@ -104,7 +101,7 @@ public class ProtectedBlockHandler implements Listener {
 
         ReplacedList lore = new ReplacedList(itemConfig.lore());
 
-        if (effects != null) {
+        if (!effects.isEmpty()) {
             ReplacedList effectBought = new ReplacedList(itemConfig.effectBought());
             effectBought = effectBought.replace("%effects%", FormatterUtil.formatList(effects, itemConfig.formatListEffect()));
             lore = lore.replace("%effectBought%", effectBought);
@@ -120,7 +117,7 @@ public class ProtectedBlockHandler implements Listener {
 
         NBTItem nbtItem = new NBTItem(itemDrop);
 
-        if (effects != null) {
+        if (!effects.isEmpty()) {
             nbtItem.setString("effect", ListSerializer.serialise(effects));
         }
         nbtItem.setString("maxOwner", Integer.toString(maxOwners));
@@ -153,21 +150,18 @@ public class ProtectedBlockHandler implements Listener {
 
         for (Block block : blocks) {
             Location location = block.getLocation();
-            Region region = SnapApi.getRegion(location);
-            if (region == null) continue;
-            ProtectedBlock protectedBlock = region.protectedBlock();
-            if (protectedBlock.center() == location) removeBlocks.add(block);
+            if (SnapApi.isProtectedBlock(location)) removeBlocks.add(block);
         }
 
         return removeBlocks;
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPistonExtend(BlockPistonExtendEvent e) {
         cancelEventIfProtectedBlocksPresent(e.getBlocks(), e);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPistonRetract(BlockPistonRetractEvent e) {
         cancelEventIfProtectedBlocksPresent(e.getBlocks(), e);
     }
@@ -175,11 +169,8 @@ public class ProtectedBlockHandler implements Listener {
     private void cancelEventIfProtectedBlocksPresent(List<Block> pushedBlocks, BlockPistonEvent event) {
         for (Block block : pushedBlocks) {
             Location location = block.getLocation();
-            Region region = SnapApi.getRegion(location);
-            if (region == null) continue;
-            ProtectedBlock protectedBlock = region.protectedBlock();
 
-            if (protectedBlock.center() == location) {
+            if (SnapApi.isProtectedBlock(location)) {
                 event.setCancelled(true);
             }
         }

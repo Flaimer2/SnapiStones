@@ -23,7 +23,7 @@ public class RegionExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "0.0.3-alpha";
+        return "2.0.0-alpha";
     }
 
     @Override

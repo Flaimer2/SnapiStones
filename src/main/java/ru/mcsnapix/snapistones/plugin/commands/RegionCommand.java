@@ -46,6 +46,7 @@ public class RegionCommand extends BaseCommand {
                 return;
             }
             sendInfo(player, region);
+            return;
         }
 
         String id = args[0];

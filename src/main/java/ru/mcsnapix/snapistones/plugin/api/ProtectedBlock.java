@@ -17,19 +17,14 @@ import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
  */
 @Accessors(fluent = true)
 public class ProtectedBlock {
+    private final Database database;
+
     /**
      * Material of the protected block.
      */
     @NonNull
     @Getter
     private final XMaterial blockMaterial;
-
-    /**
-     * Location of the center of the protected block.
-     */
-    @NonNull
-    @Getter
-    private final Location center;
 
     /**
      * Block option associated with a protected block.
@@ -44,13 +39,19 @@ public class ProtectedBlock {
      * @param region the region containing the protected block
      */
     public ProtectedBlock(Region region) {
-        Database database = region.database();
-        center = LocationSerializer.deserialise(database.getColumnAsString(Column.LOCATION));
+        database = region.database();
         blockMaterial = XMaterial.valueOf(database.getColumnAsString(Column.MATERIAL));
         blockOption = BlockUtil.getBlockOption(blockMaterial);
     }
 
     public String blockMaterialName() {
         return blockMaterial.name();
+    }
+
+    /**
+     * Location of the center of the protected block.
+     */
+    public Location center() {
+        return LocationSerializer.deserialise(database.getColumnAsString(Column.LOCATION));
     }
 }
