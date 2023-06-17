@@ -17,7 +17,7 @@ public class FlagModule implements IModule {
     private Configuration<FlagConfig> flagConfig;
 
     @Override
-    public void load() {
+    public void enable() {
         SnapiStones plugin = modules.getPlugin();
         flagConfig = Configuration.create(plugin,
                 modules.getPathSettings(),
@@ -32,5 +32,10 @@ public class FlagModule implements IModule {
     @Override
     public void reload() {
         flagConfig.reloadConfig();
+    }
+
+    @Override
+    public void disable() {
+        // Disabling the module, in this case the module does not need to disable anything
     }
 }

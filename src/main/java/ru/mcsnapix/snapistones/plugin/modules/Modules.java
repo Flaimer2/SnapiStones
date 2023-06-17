@@ -6,6 +6,7 @@ import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.modules.flags.FlagModule;
 import ru.mcsnapix.snapistones.plugin.modules.hologram.HologramModule;
 import ru.mcsnapix.snapistones.plugin.modules.home.HomeModule;
+import ru.mcsnapix.snapistones.plugin.modules.menu.MenuModule;
 import ru.mcsnapix.snapistones.plugin.modules.upgrades.UpgradeModule;
 
 import java.nio.file.Files;
@@ -19,6 +20,7 @@ public class Modules {
     private final Map<ModuleEnum, IModule> moduleMap = Map.of(
             ModuleEnum.HOLOGRAM, new HologramModule(this),
             ModuleEnum.HOME, new HomeModule(this),
+            ModuleEnum.MENU, new MenuModule(this),
             ModuleEnum.FLAGS, new FlagModule(this),
             ModuleEnum.UPGRADE, new UpgradeModule(this)
     );
@@ -31,7 +33,7 @@ public class Modules {
     }
 
     private void enableModule(ModuleEnum moduleEnum, IModule module) {
-        module.load();
+        module.enable();
         plugin.getLog().info("§fМодуль §a{} §fзагружен", moduleEnum.name().toLowerCase());
     }
 
@@ -44,6 +46,15 @@ public class Modules {
         plugin.getLog().info("§fМодуль §a{} §fперезагружен", moduleEnum.name().toLowerCase());
     }
 
+    public void disableModules() {
+        moduleMap.forEach(this::disableModule);
+    }
+
+    private void disableModule(ModuleEnum moduleEnum, IModule module) {
+        module.disable();
+        plugin.getLog().info("§fМодуль §a{} §fотключен", moduleEnum.name().toLowerCase());
+    }
+
     private IModule getModule(ModuleEnum moduleEnum) {
         return moduleMap.get(moduleEnum);
     }
@@ -54,6 +65,10 @@ public class Modules {
 
     public HomeModule home() {
         return (HomeModule) getModule(ModuleEnum.HOME);
+    }
+
+    public MenuModule menu() {
+        return (MenuModule) getModule(ModuleEnum.MENU);
     }
 
     public FlagModule flags() {

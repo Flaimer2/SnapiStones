@@ -1,7 +1,9 @@
 package ru.mcsnapix.snapistones.plugin.modules;
 
 public interface IModule {
-    void load();
+    void enable();
 
     void reload();
+
+    void disable();
 }

@@ -44,6 +44,7 @@ public class BlockHandler implements Listener {
         WorldGuardPlugin worldGuard = plugin.getWorldGuard();
 
         Player player = event.getPlayer();
+        Placeholders placeholders = new Placeholders(player);
         LocalPlayer localPlayer = WGRegionUtil.getLocalPlayer(player);
         Block block = event.getBlockPlaced();
         ItemStack itemInHand = event.getItemInHand();
@@ -60,6 +61,12 @@ public class BlockHandler implements Listener {
         if (!config.enableWorld().contains(world.getName())) return;
         if (player.isSneaking()) return;
         if (!worldGuard.createProtectionQuery().testBlockPlace(player, block.getLocation(), block.getType())) return;
+
+        if (SnapApi.getMaxRegionCount(player) < SnapApi.getRegionsByOwner(player.getName()).size()) {
+            placeholders.sendMessage(message.maxRegionCount());
+            return;
+        }
+
         BlockOption blockOption = BlockUtil.getBlockOption(xMaterial);
         RegionManager regionManager = worldGuard.getRegionManager(world);
 
@@ -69,7 +76,6 @@ public class BlockHandler implements Listener {
 
         ProtectedRegion protectedRegion = new ProtectedCuboidRegion(id, min, max);
         ApplicableRegionSet regions = regionManager.getApplicableRegions(protectedRegion);
-        Placeholders placeholders = new Placeholders(player);
 
         if (regions.size() > 0) {
             event.setCancelled(true);

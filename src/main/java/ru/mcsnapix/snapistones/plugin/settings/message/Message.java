@@ -1,5 +1,6 @@
 package ru.mcsnapix.snapistones.plugin.settings.message;
 
+import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.SubSection;
 
 import java.util.List;
@@ -30,8 +31,8 @@ public interface Message {
     @DefaultString("§fВы §cне являетесь §fвладельцем региона §a%region_id%")
     String notOwner();
 
-    @DefaultString("§fВы §cне можете §fзащитить эту область")
-    String cannotProtectArea();
+    @DefaultString("§fВы §cне можете §fзащитить регион, так как у вас регионов больше, чем у вас должно (Максимально регионов: %player_max_region_count%)")
+    String maxRegionCount();
 
     @DefaultString("§fЭта территория теперь §aзащищена§f!")
     String protectedArea();
@@ -98,6 +99,9 @@ public interface Message {
         @SubSection
         CommandAddOwner addOwner();
 
+        @SubSection
+        CommandMenu menu();
+
         interface CommandRemove {
             @DefaultString("§fИспользуйте: §a/rg remove регион игрок")
             String usage();
@@ -138,6 +142,14 @@ public interface Message {
 
             @DefaultString("§fВы успешно §aдобавили §fигрока &a%other_player_name%")
             String success();
+        }
+
+        interface CommandMenu {
+            @DefaultString("§fИспользуйте: §a/rg menu регион")
+            String usage();
+
+            @ConfDefault.DefaultString("§fВы §cне являетесь §fучастником региона")
+            String noMember();
         }
     }
 }

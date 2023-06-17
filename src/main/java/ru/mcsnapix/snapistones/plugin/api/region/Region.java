@@ -4,12 +4,14 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import ru.mcsnapix.snapistones.plugin.Placeholders;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
+import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.database.Column;
 import ru.mcsnapix.snapistones.plugin.database.Database;
 import ru.mcsnapix.snapistones.plugin.modules.home.config.HomeConfig;
@@ -19,6 +21,7 @@ import ru.mcsnapix.snapistones.plugin.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a region with various properties and methods for managing
@@ -32,10 +35,6 @@ public class Region {
     private final ProtectedRegion protectedRegion;
     @Getter
     private final Database database;
-
-    private final List<String> owners = new ArrayList<>();
-    private final List<String> members = new ArrayList<>();
-
     @Getter
     private final int date;
     @Getter
@@ -43,7 +42,8 @@ public class Region {
     @NonNull
     @Getter
     private final ProtectedBlock protectedBlock;
-
+    private List<String> owners = new ArrayList<>();
+    private List<String> members = new ArrayList<>();
     @Nullable
     private Location homeLocation;
     @Nullable
@@ -93,7 +93,7 @@ public class Region {
      * Updates the list of region owners from the database.
      */
     public void updateOwners() {
-        owners.addAll(database.getColumnAsList(Column.OWNERS));
+        owners = database.getColumnAsList(Column.OWNERS);
     }
 
     /**
@@ -122,7 +122,7 @@ public class Region {
      * Updates the list of region members from the database.
      */
     public void updateMembers() {
-        members.addAll(database.getColumnAsList(Column.MEMBERS));
+        members = database.getColumnAsList(Column.MEMBERS);
     }
 
     /**
@@ -237,6 +237,13 @@ public class Region {
         updateEffects();
     }
 
+    public void addEffect(String effect) {
+        List<String> effects = new ArrayList<>(effects());
+        effects.add(effect);
+        database.updateColumn(Column.EFFECTS, ListSerializer.serialise(effects));
+        updateEffects();
+    }
+
     /**
      * Returns the list of active effects for the region.
      *
@@ -285,13 +292,27 @@ public class Region {
         updateActiveEffects();
     }
 
+    public void addActiveEffect(String effect) {
+        List<String> effects = new ArrayList<>(activeEffects());
+        effects.add(effect);
+        database.updateColumn(Column.ACTIVE_EFFECTS, ListSerializer.serialise(effects));
+        updateActiveEffects();
+    }
+
+    public void removeActiveEffect(String effect) {
+        List<String> effects = new ArrayList<>(activeEffects());
+        effects.remove(effect);
+        database.updateColumn(Column.ACTIVE_EFFECTS, ListSerializer.serialise(effects));
+        updateActiveEffects();
+    }
+
     /**
      * Adds a player as an owner of the region and updates the database.
      *
      * @param name the player's name
      */
     public void addOwner(String name) {
-        List<String> owners = owners();
+        List<String> owners = new ArrayList<>(owners());
         owners.add(name);
         protectedRegion.getOwners().addPlayer(name);
         database.updateColumn(Column.OWNERS, ListSerializer.serialise(owners));
@@ -317,7 +338,7 @@ public class Region {
      * @param name the player's name
      */
     public void addMember(String name) {
-        List<String> members = members();
+        List<String> members = new ArrayList<>(members());
         members.add(name);
         protectedRegion.getMembers().addPlayer(name);
         database.updateColumn(Column.MEMBERS, ListSerializer.serialise(members));
@@ -331,7 +352,7 @@ public class Region {
      */
     public void removeMember(String name) {
         protectedRegion.getMembers().removePlayer(name);
-        List<String> members = owners();
+        List<String> members = members();
         members.remove(name);
         database.updateColumn(Column.MEMBERS, ListSerializer.serialise(members));
         updateMembers();
@@ -393,6 +414,10 @@ public class Region {
     public void maxMembers(int maxMembers) {
         database.updateColumn(Column.MAX_MEMBERS, maxMembers);
         updateMaxMembers();
+    }
+
+    public List<Player> playersInRegion() {
+        return Bukkit.getOnlinePlayers().stream().filter(player -> SnapApi.getRegion(player.getLocation()) == this).collect(Collectors.toList());
     }
 }
 

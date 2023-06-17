@@ -7,9 +7,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
+import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
+import ru.mcsnapix.snapistones.plugin.modules.Modules;
+import ru.mcsnapix.snapistones.plugin.modules.upgrades.config.UpgradeConfig;
 import ru.mcsnapix.snapistones.plugin.util.FormatterUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -31,26 +35,30 @@ public class Placeholders {
         this.region = region;
     }
 
-    public Placeholders(@NotNull Player player, Region region, OfflinePlayer otherPlayer) {
-        this.player = player;
-        this.region = region;
-        this.otherPlayer = otherPlayer;
-    }
-
     public String replacePlaceholders(String value) {
+        UpgradeConfig upgradeConfig = null;
+        Modules modules = SnapiStones.get().getModules();
+        if (modules != null) {
+            upgradeConfig = SnapiStones.get().getModules().upgrade().upgradeConfig().data();
+        }
+
         if (player != null) {
             value = value.replace("%player_name%", player.getName());
+            value = value.replace("%player_max_region_count%", Integer.toString(SnapApi.getMaxRegionCount(player)));
         }
 
         if (region != null) {
             value = value.replace("%region_id%", region.name());
+            value = value.replace("%region_author%", region.author());
             value = value.replace("%region_owners%", FormatterUtil.formatPlayerList(region.owners()));
             value = value.replace("%region_members%", FormatterUtil.formatPlayerList(region.members()));
             value = value.replace("%region_owners_size%", Integer.toString(region.owners().size()));
             value = value.replace("%region_members_size%", Integer.toString(region.members().size()));
             value = value.replace("%region_creation_date%", Integer.toString(region.date()));
-            value = value.replace("%region_max_owners%", Integer.toString(region.maxOwners()));
-            value = value.replace("%region_max_members%", Integer.toString(region.maxMembers()));
+            if (upgradeConfig != null) {
+                value = value.replace("%region_max_owners%", Integer.toString(upgradeConfig.limitOwner().get(region.maxOwners())));
+                value = value.replace("%region_max_members%", Integer.toString(upgradeConfig.limitOwner().get(region.maxMembers())));
+            }
             value = value.replace("%region_has_home%", FormatterUtil.formatPlaceBoolean(region.hasHomeLocation()));
             ProtectedBlock protectedBlock = region.protectedBlock();
             value = value.replace("%block_material%", protectedBlock.blockMaterialName());
@@ -75,8 +83,11 @@ public class Placeholders {
     }
 
     public List<String> replacePlaceholders(List<String> value) {
-        value.forEach(this::replacePlaceholders);
-        return value;
+        List<String> strings = new ArrayList<>();
+        for (String s : value) {
+            strings.add(replacePlaceholders(s));
+        }
+        return strings;
     }
 
     @SuppressWarnings("deprecation")

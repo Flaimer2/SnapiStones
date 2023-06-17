@@ -3,8 +3,11 @@ package ru.mcsnapix.snapistones.plugin.api;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.api.region.RegionRegistry;
+import ru.mcsnapix.snapistones.plugin.settings.config.MainConfig;
 import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class SnapApi {
+    private final MainConfig config = SnapiStones.get().getMainConfig().data();
     private final RegionRegistry regionRegistry = RegionRegistry.get();
 
     public Region getRegion(String id) {
@@ -47,5 +51,20 @@ public class SnapApi {
         ProtectedBlock protectedBlock = region.protectedBlock();
 
         return protectedBlock.center().equals(location.getBlock().getLocation());
+    }
+
+    public int getMaxRegionCount(Player player) {
+        int count = config.regionCount().get("default");
+
+        for (var entry : config.regionCount().entrySet()) {
+            String group = entry.getKey();
+            int fCount = entry.getValue();
+
+            if (player.hasPermission("snapistones.region.count." + group)) {
+                if (count < fCount) count = fCount;
+            }
+        }
+
+        return count;
     }
 }

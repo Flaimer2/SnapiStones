@@ -48,4 +48,11 @@ public class FormatterUtil {
                 ", y=" + location.getBlockY() +
                 ", z=" + toInt(location.getBlockZ());
     }
+
+    public String formatList(List<String> list) {
+        if (list.isEmpty()) {
+            return "§cНет игроков";
+        }
+        return String.join("\\n§a", list);
+    }
 }

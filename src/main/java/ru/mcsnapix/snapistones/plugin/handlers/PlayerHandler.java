@@ -69,19 +69,6 @@ public class PlayerHandler implements Listener {
                 isOnABase.remove(player);
             }
         }
-
-//        if (currentRegion == null && previousRegion == null) {
-//            isOnABase.remove(player);
-//        } else {
-//            triggerRegionEvent(player, currentRegion, EventType.ENTER);
-//            isOnABase.put(player, currentRegion);
-//        }
-//
-//        if (previousRegion != null) {
-//            triggerRegionEvent(player, previousRegion, EventType.LEAVE);
-//            triggerRegionEvent(player, currentRegion, EventType.ENTER);
-//            isOnABase.replace(player, currentRegion);
-//        }
     }
 
     private void triggerRegionEvent(Player player, Region region, EventType eventType) {

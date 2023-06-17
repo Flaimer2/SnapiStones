@@ -56,16 +56,16 @@ public final class SnapiStones extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         loadWorldGuard();
         loadConfigs();
+        enableMySQL();
+        registerRegions();
         modules = new Modules();
         commands = new Commands();
         adventure = BukkitAudiences.create(this);
-        enableMySQL();
         registerHandlers(pluginManager);
         registerListeners(pluginManager);
         if (isPluginEnable("PlaceholderAPI")) {
             new RegionExpansion().register();
         }
-        registerRegions();
     }
 
     public void onReload() {
@@ -75,11 +75,12 @@ public final class SnapiStones extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        disableMySQL();
+        modules.disableModules();
         if (adventure != null) {
             adventure.close();
             adventure = null;
         }
+        disableMySQL();
     }
 
     private void loadWorldGuard() {

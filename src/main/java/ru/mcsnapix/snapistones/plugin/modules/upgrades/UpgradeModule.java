@@ -17,7 +17,7 @@ public class UpgradeModule implements IModule {
     private Configuration<UpgradeConfig> upgradeConfig;
 
     @Override
-    public void load() {
+    public void enable() {
         SnapiStones plugin = modules.getPlugin();
 
         upgradeConfig = Configuration.create(
@@ -33,5 +33,10 @@ public class UpgradeModule implements IModule {
     @Override
     public void reload() {
         upgradeConfig.reloadConfig();
+    }
+
+    @Override
+    public void disable() {
+        // Disabling the module, in this case the module does not need to disable anything
     }
 }

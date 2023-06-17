@@ -1,8 +1,6 @@
 package ru.mcsnapix.snapistones.plugin.commands;
 
 import co.aikar.commands.PaperCommandManager;
-import com.alessiodp.lastloginapi.api.LastLogin;
-import com.alessiodp.lastloginapi.api.interfaces.LastLoginAPI;
 import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.SnapApi;
@@ -13,13 +11,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Commands {
-    private final LastLoginAPI lastLoginAPI = LastLogin.getApi();
-    private final SnapiStones plugin = SnapiStones.get();
     private final PaperCommandManager manager;
 
     public Commands() {
-        manager = new PaperCommandManager(plugin);
+        manager = new PaperCommandManager(SnapiStones.get());
         manager.registerCommand(new RegionCommand());
+        manager.registerCommand(new RegionAdminCommand());
         registerCommandCompletions();
     }
 
@@ -42,11 +39,7 @@ public class Commands {
             return SnapApi.getRegionsByOwner(player.getName()).stream().map(Region::name).collect(Collectors.toList());
         });
 
-        manager.getCommandCompletions().registerAsyncCompletion("regionlist", c -> {
-            Player player = c.getPlayer();
-
-            return SnapApi.getRegions().stream().map(Region::name).collect(Collectors.toList());
-        });
+        manager.getCommandCompletions().registerAsyncCompletion("regionlist", c -> SnapApi.getRegions().stream().map(Region::name).collect(Collectors.toList()));
 
         manager.getCommandCompletions().registerAsyncCompletion("regionlistbyplayer", c -> {
             Player player = c.getPlayer();

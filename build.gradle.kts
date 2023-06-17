@@ -51,7 +51,6 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("co.aikar:idb-core:1.0.0-SNAPSHOT")
     implementation("de.tr7zw:item-nbt-api:2.11.2")
-    implementation("commons-collections:commons-collections:3.2.2")
     implementation("com.zaxxer:HikariCP:2.4.1")
 }
 

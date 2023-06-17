@@ -4,13 +4,18 @@ import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import ru.mcsnapix.snapistones.plugin.Placeholders;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
+import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionCreateEvent;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionRemoveEvent;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
@@ -58,5 +63,27 @@ public class RegionListener implements Listener {
         );
         placeholders.sendMessage(message.protectedBlockBroken());
         RegionRegistry.get().removeRegion(region.name());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBlockExplode(BlockExplodeEvent event) {
+        event.setCancelled(false);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        event.setCancelled(false);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWitherBlockDamage(EntityChangeBlockEvent event) {
+        Location location = event.getBlock().getLocation();
+        if (SnapApi.isProtectedBlock(location)) {
+            event.setCancelled(true);
+            return;
+        }
+        if (event.getEntityType() == EntityType.WITHER || event.getEntityType() == EntityType.WITHER_SKULL) {
+            event.setCancelled(false);
+        }
     }
 }
