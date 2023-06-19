@@ -29,7 +29,7 @@ public class EffectListener implements Listener {
             String effectName = effectOptions.effect();
             int level = effectOptions.level();
 
-            player.addPotionEffect(PotionEffectType.getByName(effectName).createEffect(Integer.MAX_VALUE, level-1));
+            player.addPotionEffect(PotionEffectType.getByName(effectName).createEffect(Integer.MAX_VALUE, level - 1));
         }
     }
 
@@ -82,7 +82,7 @@ public class EffectListener implements Listener {
             String effectName = effectOptions.effect();
             int level = effectOptions.level();
 
-            player.addPotionEffect(PotionEffectType.getByName(effectName).createEffect(Integer.MAX_VALUE, level-1));
+            player.addPotionEffect(PotionEffectType.getByName(effectName).createEffect(Integer.MAX_VALUE, level - 1));
         }
     }
 
