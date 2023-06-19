@@ -8,6 +8,9 @@ import java.util.List;
 @UtilityClass
 public class ListSerializer {
     public String serialise(List<String> list) {
+        if (list.isEmpty()) {
+            return null;
+        }
         return String.join(";", list);
     }
 

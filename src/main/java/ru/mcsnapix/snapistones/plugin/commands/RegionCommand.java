@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.Placeholders;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
 import ru.mcsnapix.snapistones.plugin.api.SnapApi;
+import ru.mcsnapix.snapistones.plugin.api.events.region.RegionAddPlayerEvent;
+import ru.mcsnapix.snapistones.plugin.api.events.region.RegionRemovePlayerEvent;
 import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.modules.Modules;
 import ru.mcsnapix.snapistones.plugin.modules.home.config.HomeConfig;
@@ -154,6 +156,11 @@ public class RegionCommand extends BaseCommand {
         }
 
         placeholders.sendMessage(removeCommand.success());
+
+        Player otherPlayer = plugin.getServer().getPlayer(lastLoginPlayer.getName());
+        if (otherPlayer != null) {
+            plugin.callEvent(new RegionRemovePlayerEvent(otherPlayer, region));
+        }
     }
 
     @Subcommand("addmember")
@@ -221,6 +228,11 @@ public class RegionCommand extends BaseCommand {
 
         region.addMember(lastLoginPlayer.getName());
         placeholders.sendMessage(addCommand.success());
+
+        Player otherPlayer = plugin.getServer().getPlayer(lastLoginPlayer.getName());
+        if (otherPlayer != null) {
+            plugin.callEvent(new RegionAddPlayerEvent(otherPlayer, region));
+        }
     }
 
     @Subcommand("addowner")
@@ -292,6 +304,11 @@ public class RegionCommand extends BaseCommand {
 
         region.addOwner(lastLoginPlayer.getName());
         placeholders.sendMessage(addCommand.success());
+
+        Player otherPlayer = plugin.getServer().getPlayer(lastLoginPlayer.getName());
+        if (otherPlayer != null) {
+            plugin.callEvent(new RegionAddPlayerEvent(otherPlayer, region));
+        }
     }
 
     // ! MODULE HOME START

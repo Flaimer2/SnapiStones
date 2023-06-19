@@ -24,7 +24,7 @@ public class PlayerHandler implements Listener {
     private final SnapiStones plugin;
     private final Map<Player, Region> isOnABase = new WeakHashMap<>();
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerMove(PlayerMoveEvent e) {
         checkEvents(e.getPlayer());
     }
@@ -41,10 +41,10 @@ public class PlayerHandler implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        checkEvents(e.getPlayer());
+        plugin.getMorePaperLib().scheduling().asyncScheduler().run(() -> checkEvents(e.getPlayer()));
     }
 
-    private void checkEvents(Player player) {
+    private void checkEvents(final Player player) {
         if (player == null) return;
 
         Location location = player.getLocation();
@@ -71,7 +71,7 @@ public class PlayerHandler implements Listener {
         }
     }
 
-    private void triggerRegionEvent(Player player, Region region, EventType eventType) {
+    private void triggerRegionEvent(final Player player, final Region region, final EventType eventType) {
         if (eventType == EventType.ENTER) {
             plugin.callEvent(new RegionEnterEvent(player, region));
         } else if (eventType == EventType.LEAVE) {

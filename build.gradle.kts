@@ -28,6 +28,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.alessiodp.com/releases/")
+    maven("https://mvn-repo.arim.space/lesser-gpl3/")
 }
 
 dependencies {
@@ -52,6 +53,7 @@ dependencies {
     implementation("co.aikar:idb-core:1.0.0-SNAPSHOT")
     implementation("de.tr7zw:item-nbt-api:2.11.2")
     implementation("com.zaxxer:HikariCP:2.4.1")
+    implementation("space.arim.morepaperlib:morepaperlib:0.4.2")
 }
 
 sonarqube {
@@ -76,6 +78,7 @@ tasks {
         relocateDependency("com.zaxxer")
         relocateDependency("de.tr7zw")
         relocateDependency("co.aikar.idb")
+        relocateDependency("space.arim.morepaperlib")
         relocate("co.aikar.commands", "$libraryPackage.acf")
         relocate("co.aikar.locales", "$libraryPackage.locales")
     }
@@ -93,7 +96,7 @@ tasks {
 
 bukkit {
     name = "SnapiStones"
-    version = "2.0.0-alpha"
+    version = "2.0.0-beta"
     main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
     description = "Плагин на блоки привата"
     depend = listOf("WorldEdit", "WorldGuard", "DecentHolograms", "LastLoginAPI")

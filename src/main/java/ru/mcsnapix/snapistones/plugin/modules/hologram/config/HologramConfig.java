@@ -12,7 +12,7 @@ public interface HologramConfig {
     @SuppressWarnings("unused") // used by DazzleConf
     static Map<String, HologramOption> defaultHolograms() {
         Map<String, HologramOption> hologramOptionMap = new HashMap<>();
-        List<String> stringList = List.of(
+        List<String> lines = List.of(
                 "§cОгромный приват",
                 "",
                 "§fВладелец: §a%region_owners%",
@@ -20,9 +20,15 @@ public interface HologramConfig {
                 "",
                 "§aНажмите SHIFT + ПКМ, чтобы открыть меню"
         );
+        List<String> otherPlayerLines = List.of(
+                "§cОгромный приват",
+                "",
+                "§fВладелец: §a%region_owners%",
+                "§fРазмер: §a67x67x67"
+        );
         hologramOptionMap.put(
                 "RED_MUSHROOM_BLOCK",
-                HologramOption.of(stringList, 3.0)
+                HologramOption.of(lines, otherPlayerLines, 3.0, 2.4, 64)
         );
         return hologramOptionMap;
     }

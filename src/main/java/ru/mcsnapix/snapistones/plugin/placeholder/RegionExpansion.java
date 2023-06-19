@@ -29,7 +29,7 @@ public class RegionExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "2.0.0-alpha";
+        return "2.0.0-beta";
     }
 
     @Override
@@ -52,6 +52,8 @@ public class RegionExpansion extends PlaceholderExpansion {
 
         if (id.equalsIgnoreCase("author")) return region.author();
         if (id.equalsIgnoreCase("owners")) return ListSerializer.serialise(region.owners());
+        if (id.equalsIgnoreCase("has_owner") && additionalParameter != null)
+            return Boolean.toString(region.hasOwnerInRegion(additionalParameter));
         if (id.equalsIgnoreCase("owners_formatted")) return FormatterUtil.formatList(region.owners());
         if (id.equalsIgnoreCase("owners_size")) return Integer.toString(region.owners().size());
         if (id.equalsIgnoreCase("members")) return ListSerializer.serialise(region.members());
@@ -80,7 +82,6 @@ public class RegionExpansion extends PlaceholderExpansion {
     }
 
     private String getTime(long millis) {
-
         var instance = java.time.Instant.ofEpochMilli(millis);
         var zonedDateTime = java.time.ZonedDateTime
                 .ofInstant(instance, ZoneId.of("Europe/Moscow"));

@@ -3,7 +3,7 @@ package ru.mcsnapix.snapistones.plugin.settings.config.block;
 import space.arim.dazzleconf.annote.SubSection;
 
 public interface BlockOption {
-    static BlockOption of(String symbol, int radius, String placeSound, String breakSound, @SubSection PlaceEffect placeEffect) {
+    static BlockOption of(String symbol, int radius, String placeSound, String breakSound, boolean alwaysCreateRegion, @SubSection PlaceEffect placeEffect) {
         return new BlockOption() {
             @Override
             public String symbol() {
@@ -26,6 +26,11 @@ public interface BlockOption {
             }
 
             @Override
+            public boolean alwaysCreateRegion() {
+                return alwaysCreateRegion;
+            }
+
+            @Override
             public @SubSection PlaceEffect placeEffect() {
                 return placeEffect;
             }
@@ -39,6 +44,8 @@ public interface BlockOption {
     String placeSound();
 
     String breakSound();
+
+    boolean alwaysCreateRegion();
 
     @SubSection PlaceEffect placeEffect();
 

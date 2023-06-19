@@ -102,15 +102,20 @@ public class ProtectedBlockHandler implements Listener {
         ReplacedList lore = new ReplacedList(itemConfig.lore());
 
         if (!effects.isEmpty()) {
+            List<String> effectName = new ArrayList<>();
+            for (String effect : effects) {
+                effectName.add(upgradeConfig.effects().get(effect).name());
+            }
+
             ReplacedList effectBought = new ReplacedList(itemConfig.effectBought());
-            effectBought = effectBought.replace("%effects%", FormatterUtil.formatList(effects, itemConfig.formatListEffect()));
+            effectBought = effectBought.replace("%effects%", FormatterUtil.formatList(effectName, itemConfig.formatListEffect()));
             lore = lore.replace("%effectBought%", effectBought);
         } else {
             lore = lore.replace("%effectBought%", (List<String>) null);
         }
 
-        lore = lore.replace("%maxOwners%", itemConfig.maxOwners().replace("%amount%", Integer.toString(maxOwners)));
-        lore = lore.replace("%maxMembers%", itemConfig.maxMembers().replace("%amount%", Integer.toString(maxMembers)));
+        lore = lore.replace("%maxOwners%", itemConfig.maxOwners().replace("%amount%", Integer.toString(upgradeConfig.limitOwner().get(maxOwners))));
+        lore = lore.replace("%maxMembers%", itemConfig.maxMembers().replace("%amount%", Integer.toString(upgradeConfig.limitMember().get(maxMembers))));
 
         itemMeta.setLore(lore);
         itemDrop.setItemMeta(itemMeta);

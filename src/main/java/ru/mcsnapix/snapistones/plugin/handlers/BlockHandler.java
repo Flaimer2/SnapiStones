@@ -56,10 +56,11 @@ public class BlockHandler implements Listener {
         double blockX = location.getX();
         double blockY = location.getY();
         double blockZ = location.getZ();
+        BlockOption blockOption = BlockUtil.getBlockOption(xMaterial);
 
-        if (!BlockUtil.hasBlockOption(xMaterial)) return;
+        if (blockOption == null) return;
         if (!config.enableWorld().contains(world.getName())) return;
-        if (player.isSneaking()) return;
+        if (!blockOption.alwaysCreateRegion() && player.isSneaking()) return;
         if (!worldGuard.createProtectionQuery().testBlockPlace(player, block.getLocation(), block.getType())) return;
 
         if (SnapApi.getMaxRegionCount(player) < SnapApi.getRegionsByOwner(player.getName()).size()) {
@@ -67,7 +68,6 @@ public class BlockHandler implements Listener {
             return;
         }
 
-        BlockOption blockOption = BlockUtil.getBlockOption(xMaterial);
         RegionManager regionManager = worldGuard.getRegionManager(world);
 
         String id = WGRegionUtil.createRegionID(regionManager, player, blockOption.symbol());

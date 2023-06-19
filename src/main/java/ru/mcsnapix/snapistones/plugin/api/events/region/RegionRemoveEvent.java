@@ -1,7 +1,7 @@
 package ru.mcsnapix.snapistones.plugin.api.events.region;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,7 +13,7 @@ import ru.mcsnapix.snapistones.plugin.api.region.Region;
  * Represents an {@link Event} that can be listened to with the {@link Listener} class,
  * which sends the {@link Player}, {@link Region}
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Accessors(fluent = true)
 @Getter
 public class RegionRemoveEvent extends Event {

@@ -31,11 +31,13 @@ import ru.mcsnapix.snapistones.plugin.settings.message.Message;
 import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
+import space.arim.morepaperlib.MorePaperLib;
 
 @Getter
 public final class SnapiStones extends JavaPlugin {
     private static SnapiStones plugin;
     private final Logger log = getSLF4JLogger();
+    private MorePaperLib morePaperLib;
     private Modules modules;
     private Commands commands;
     private ConfigurationOptions options;
@@ -53,6 +55,7 @@ public final class SnapiStones extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        morePaperLib = new MorePaperLib(plugin);
         PluginManager pluginManager = getServer().getPluginManager();
         loadWorldGuard();
         loadConfigs();

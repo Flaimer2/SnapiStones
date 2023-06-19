@@ -326,7 +326,7 @@ public class Region {
      */
     public void removeOwner(String name) {
         protectedRegion.getOwners().removePlayer(name);
-        List<String> owners = owners();
+        List<String> owners = new ArrayList<>(owners());
         owners.remove(name);
         database.updateColumn(Column.OWNERS, ListSerializer.serialise(owners));
         updateOwners();
@@ -352,7 +352,7 @@ public class Region {
      */
     public void removeMember(String name) {
         protectedRegion.getMembers().removePlayer(name);
-        List<String> members = members();
+        List<String> members = new ArrayList<>(members());
         members.remove(name);
         database.updateColumn(Column.MEMBERS, ListSerializer.serialise(members));
         updateMembers();
@@ -417,7 +417,7 @@ public class Region {
     }
 
     public List<Player> playersInRegion() {
-        return Bukkit.getOnlinePlayers().stream().filter(player -> SnapApi.getRegion(player.getLocation()) == this).collect(Collectors.toList());
+        return Bukkit.getOnlinePlayers().stream().filter(player -> SnapApi.getRegion(player.getLocation()) == this && hasPlayerInRegion(player.getName())).collect(Collectors.toList());
     }
 }
 
