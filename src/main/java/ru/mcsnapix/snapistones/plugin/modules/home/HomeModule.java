@@ -1,36 +1,30 @@
 package ru.mcsnapix.snapistones.plugin.modules.home;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import org.bukkit.entity.Player;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
-import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
-import ru.mcsnapix.snapistones.plugin.modules.Module;
-import ru.mcsnapix.snapistones.plugin.modules.home.settings.HomeConfig;
-import ru.mcsnapix.snapistones.plugin.modules.interfaces.IModule;
+import ru.mcsnapix.snapistones.plugin.modules.IModule;
+import ru.mcsnapix.snapistones.plugin.modules.Modules;
+import ru.mcsnapix.snapistones.plugin.modules.home.config.HomeConfig;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;
 
 @RequiredArgsConstructor
 @Accessors(fluent = true)
 @Getter
 public class HomeModule implements IModule {
-    @NonNull
-    private Module module;
+    private final Modules modules;
     private Configuration<HomeConfig> homeConfig;
 
     @Override
-    public void load() {
-        SnapiStones plugin = module.plugin();
+    public void enable() {
+        SnapiStones plugin = modules.getPlugin();
         homeConfig = Configuration.create(
                 plugin,
-                module.pathSettings(),
+                modules.getPathSettings(),
                 "home.yml",
                 HomeConfig.class,
-                plugin.options()
+                plugin.getOptions()
         );
     }
 
@@ -39,12 +33,8 @@ public class HomeModule implements IModule {
         homeConfig.reloadConfig();
     }
 
-    public HomeManager homeManager(SnapPlayer player) {
-        return new HomeManager(this, player);
-    }
-
-    public HomeManager homeManager(Player player, ProtectedRegion region) {
-        SnapPlayer snapPlayer = SnapAPI.player(player, region);
-        return new HomeManager(this, snapPlayer);
+    @Override
+    public void disable() {
+        // Disabling the module, in this case the module does not need to disable anything
     }
 }

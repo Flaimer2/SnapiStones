@@ -1,7 +1,6 @@
 package ru.mcsnapix.snapistones.plugin.handlers;
 
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,23 +16,23 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import ru.mcsnapix.snapistones.plugin.ClickAction;
 import ru.mcsnapix.snapistones.plugin.ReplacedList;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
-import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
-import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
-import ru.mcsnapix.snapistones.plugin.api.enums.ClickAction;
+import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.events.block.BlockInteractEvent;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionRemoveEvent;
+import ru.mcsnapix.snapistones.plugin.api.region.Region;
 import ru.mcsnapix.snapistones.plugin.database.Database;
-import ru.mcsnapix.snapistones.plugin.modules.upgrade.UpgradeModule;
-import ru.mcsnapix.snapistones.plugin.modules.upgrade.settings.UpgradeConfig;
+import ru.mcsnapix.snapistones.plugin.modules.Modules;
+import ru.mcsnapix.snapistones.plugin.modules.upgrades.UpgradeModule;
+import ru.mcsnapix.snapistones.plugin.modules.upgrades.config.UpgradeConfig;
 import ru.mcsnapix.snapistones.plugin.serializers.ListSerializer;
-import ru.mcsnapix.snapistones.plugin.utils.BlockUtil;
-import ru.mcsnapix.snapistones.plugin.utils.FormatterUtil;
-import ru.mcsnapix.snapistones.plugin.utils.RegionUtil;
+import ru.mcsnapix.snapistones.plugin.util.FormatterUtil;
+import ru.mcsnapix.snapistones.plugin.util.WGRegionUtil;
 import ru.mcsnapix.snapistones.plugin.xseries.XMaterial;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,141 +44,138 @@ public class ProtectedBlockHandler implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Action action = event.getAction();
 
-        if (!(action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK)) {
-            return;
-        }
+        if (!(action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK)) return;
 
         Block block = event.getClickedBlock();
-        if (block == null) {
-            return;
-        }
+        if (block == null) return;
 
         Location location = block.getLocation();
-        if (!BlockUtil.isRegionProtectedBlock(location)) {
-            return;
-        }
+        Region region = SnapApi.getRegion(location);
 
-        XMaterial item = XMaterial.matchXMaterial(block.getType());
+        if (!SnapApi.isProtectedBlock(location)) return;
+
         Player player = event.getPlayer();
-        ProtectedBlock protectedBlock = BlockUtil.protectedBlock(item);
+        if (player == null) return;
+        if (!region.hasPlayerInRegion(player.getName())) return;
 
-        RegionUtil regionUtil = new RegionUtil(player);
-        ProtectedRegion region = regionUtil.getRegion(location);
-        SnapPlayer snapPlayer = SnapAPI.player(player, region, protectedBlock);
-
-        if (snapPlayer.hasPlayerInRegion()) {
-            ClickAction clickAction = getClickAction(player, action);
-            plugin.callEvent(new BlockInteractEvent(snapPlayer, clickAction, region, protectedBlock, location));
-        }
-    }
-
-    private ClickAction getClickAction(Player player, Action action) {
-        if (player.isSneaking()) {
-            if (action == Action.LEFT_CLICK_BLOCK) {
-                return ClickAction.LEFT_SHIFT;
-            } else {
-                return ClickAction.RIGHT_SHIFT;
-            }
-        } else {
-            if (action == Action.LEFT_CLICK_BLOCK) {
-                return ClickAction.LEFT;
-            } else {
-                return ClickAction.RIGHT;
-            }
-        }
+        ClickAction clickAction = ClickAction.getClickAction(player, action);
+        plugin.callEvent(new BlockInteractEvent(player, clickAction, region));
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-        Location location = block.getLocation();
-
-        if (!BlockUtil.isRegionProtectedBlock(location)) {
-            return;
-        }
+        if (block == null) return;
 
         XMaterial item = XMaterial.matchXMaterial(block.getType());
-        Player player = event.getPlayer();
 
-        RegionUtil regionUtil = new RegionUtil(player);
-        ProtectedBlock protectedBlock = BlockUtil.protectedBlock(item);
-        ProtectedRegion region = regionUtil.getRegion(location);
-        SnapPlayer snapPlayer = SnapAPI.player(player, region, protectedBlock);
-        RegionManager regionManager = regionUtil.regionManager();
+        Location location = block.getLocation();
+        Region region = SnapApi.getRegion(location);
 
-        if (!snapPlayer.hasOwnerPlayerInRegion()) {
-            event.setCancelled(true);
-            return;
-        }
+        if (!SnapApi.isProtectedBlock(location)) return;
 
+        RegionManager regionManager = WGRegionUtil.getRegionManager(location.getWorld());
         event.setCancelled(true);
-        block.setType(Material.AIR);
-        // ! Module Upgrade
-        Database database = new Database(region);
-        List<String> effects = database.effects();
-        int maxOwners = database.maxOwners();
-        int maxMembers = database.maxMembers();
 
-        UpgradeModule upgradeModule = plugin.module().upgrade();
+        Player player = event.getPlayer();
+        if (player == null) return;
+        if (!region.hasOwnerInRegion(player.getName())) return;
+
+        block.setType(Material.AIR);
+
+        Modules modules = plugin.getModules();
+
+        // ! Module Upgrade
+        List<String> effects = region.effects();
+        int maxOwners = region.maxOwners();
+        int maxMembers = region.maxMembers();
+
+        UpgradeModule upgradeModule = modules.upgrade();
         UpgradeConfig upgradeConfig = upgradeModule.upgradeConfig().data();
         var itemConfig = upgradeConfig.item();
 
         ItemStack itemDrop = item.parseItem();
+        assert itemDrop != null;
         ItemMeta itemMeta = itemDrop.getItemMeta();
         itemMeta.setDisplayName(itemConfig.name());
 
         ReplacedList lore = new ReplacedList(itemConfig.lore());
 
-        if (effects != null) {
+        if (!effects.isEmpty()) {
+            List<String> effectName = new ArrayList<>();
+            for (String effect : effects) {
+                effectName.add(upgradeConfig.effects().get(effect).name());
+            }
+
             ReplacedList effectBought = new ReplacedList(itemConfig.effectBought());
-            effectBought = effectBought.replace("%effects%", FormatterUtil.formatList(effects, itemConfig.formatListEffect()));
+            effectBought = effectBought.replace("%effects%", FormatterUtil.formatList(effectName, itemConfig.formatListEffect()));
             lore = lore.replace("%effectBought%", effectBought);
         } else {
             lore = lore.replace("%effectBought%", (List<String>) null);
         }
 
-        lore = lore.replace("%maxOwners%", itemConfig.maxOwners().replace("%amount%", Integer.toString(maxOwners)));
-        lore = lore.replace("%maxMembers%", itemConfig.maxMembers().replace("%amount%", Integer.toString(maxMembers)));
+        lore = lore.replace("%maxOwners%", itemConfig.maxOwners().replace("%amount%", Integer.toString(upgradeConfig.limitOwner().get(maxOwners))));
+        lore = lore.replace("%maxMembers%", itemConfig.maxMembers().replace("%amount%", Integer.toString(upgradeConfig.limitMember().get(maxMembers))));
 
         itemMeta.setLore(lore);
         itemDrop.setItemMeta(itemMeta);
 
-        NBTItem nbti = new NBTItem(itemDrop);
+        NBTItem nbtItem = new NBTItem(itemDrop);
 
-        if (effects != null) {
-            nbti.setString("effect", ListSerializer.serialize(effects));
+        if (!effects.isEmpty()) {
+            nbtItem.setString("effect", ListSerializer.serialise(effects));
         }
-        nbti.setString("maxOwner", Integer.toString(maxOwners));
-        nbti.setString("maxMember", Integer.toString(maxMembers));
+        nbtItem.setString("maxOwner", Integer.toString(maxOwners));
+        nbtItem.setString("maxMember", Integer.toString(maxMembers));
 
-        block.getWorld().dropItem(block.getLocation(), nbti.getItem());
+        block.getWorld().dropItem(block.getLocation(), nbtItem.getItem());
 
-        plugin.callEvent(new RegionRemoveEvent(snapPlayer, region, protectedBlock, location));
-        regionManager.removeRegion(region.getId());
+        plugin.callEvent(new RegionRemoveEvent(player, region));
+        regionManager.removeRegion(region.name());
+        Database database = new Database(region.name());
         database.removeRegion();
     }
 
     @EventHandler
-    public void onBlockExplode(EntityExplodeEvent event) {
-        event.blockList().removeIf(
-                block ->
-                        BlockUtil.isRegionProtectedBlock(block.getLocation())
-        );
+    public void onEntityExplode(EntityExplodeEvent event) {
+        List<Block> blocks = event.blockList();
+
+        event.blockList().removeAll(getRemoveBlocks(blocks));
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent event) {
+        List<Block> blocks = event.blockList();
+
+        event.blockList().removeAll(getRemoveBlocks(blocks));
+    }
+
+    public List<Block> getRemoveBlocks(List<Block> blocks) {
+        List<Block> removeBlocks = new ArrayList<>();
+
+        for (Block block : blocks) {
+            Location location = block.getLocation();
+            if (SnapApi.isProtectedBlock(location)) removeBlocks.add(block);
+        }
+
+        return removeBlocks;
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPistonExtend(BlockPistonExtendEvent e) {
         cancelEventIfProtectedBlocksPresent(e.getBlocks(), e);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPistonRetract(BlockPistonRetractEvent e) {
         cancelEventIfProtectedBlocksPresent(e.getBlocks(), e);
     }
 
     private void cancelEventIfProtectedBlocksPresent(List<Block> pushedBlocks, BlockPistonEvent event) {
         for (Block block : pushedBlocks) {
-            if (BlockUtil.isRegionProtectedBlock(block.getLocation())) {
+            Location location = block.getLocation();
+
+            if (SnapApi.isProtectedBlock(location)) {
                 event.setCancelled(true);
             }
         }

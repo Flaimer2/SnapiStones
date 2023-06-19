@@ -1,31 +1,29 @@
 package ru.mcsnapix.snapistones.plugin.modules.flags;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.modules.Module;
-import ru.mcsnapix.snapistones.plugin.modules.flags.settings.FlagConfig;
-import ru.mcsnapix.snapistones.plugin.modules.interfaces.IModule;
+import ru.mcsnapix.snapistones.plugin.modules.IModule;
+import ru.mcsnapix.snapistones.plugin.modules.Modules;
+import ru.mcsnapix.snapistones.plugin.modules.flags.config.FlagConfig;
 import ru.mcsnapix.snapistones.plugin.settings.Configuration;
 
 @RequiredArgsConstructor
 @Accessors(fluent = true)
 @Getter
 public class FlagModule implements IModule {
-    @NonNull
-    private final Module module;
+    private final Modules modules;
     private Configuration<FlagConfig> flagConfig;
 
     @Override
-    public void load() {
-        SnapiStones plugin = module.plugin();
+    public void enable() {
+        SnapiStones plugin = modules.getPlugin();
         flagConfig = Configuration.create(plugin,
-                module.pathSettings(),
+                modules.getPathSettings(),
                 "flag.yml",
                 FlagConfig.class,
-                plugin.options()
+                plugin.getOptions()
         );
 
         plugin.getServer().getPluginManager().registerEvents(new FlagListener(flagConfig.data()), plugin);
@@ -34,5 +32,10 @@ public class FlagModule implements IModule {
     @Override
     public void reload() {
         flagConfig.reloadConfig();
+    }
+
+    @Override
+    public void disable() {
+        // Disabling the module, in this case the module does not need to disable anything
     }
 }

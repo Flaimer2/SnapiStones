@@ -5,8 +5,11 @@ import space.arim.dazzleconf.annote.SubSection;
 
 import java.util.List;
 
+import static space.arim.dazzleconf.annote.ConfDefault.DefaultString;
+import static space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
+
 public interface Message {
-    @ConfDefault.DefaultStrings({
+    @DefaultStrings({
             "",
             "  §e§lКоманды приватов на Анархии",
             "",
@@ -22,38 +25,38 @@ public interface Message {
     })
     List<String> help();
 
-    @ConfDefault.DefaultString("§cНет §fрегиона с названием §a%region_id%")
+    @DefaultString("§cНет §fрегиона с названием §a%region_id%")
     String regionNotExist();
 
-    @ConfDefault.DefaultString("§fВы §cне являетесь §fвладельцем региона §a%region_id%")
+    @DefaultString("§fВы §cне являетесь §fвладельцем региона §a%region_id%")
     String notOwner();
 
-    @ConfDefault.DefaultString("§fВы §cне можете §fзащитить эту область")
-    String cannotProtectArea();
+    @DefaultString("§fВы §cне можете §fзащитить регион, так как у вас регионов больше, чем у вас должно (Максимально регионов: %player_max_region_count%)")
+    String maxRegionCount();
 
-    @ConfDefault.DefaultString("§fЭта территория теперь §aзащищена§f!")
+    @DefaultString("§fЭта территория теперь §aзащищена§f!")
     String protectedArea();
 
-    @ConfDefault.DefaultString("§fВы §cне можете §fустановить блок привата здесь! Ваш регион §bпересекается §fс другим")
+    @DefaultString("§fВы §cне можете §fустановить блок привата здесь! Ваш регион §bпересекается §fс другим")
     String cannotPlaceProtectedBlock();
 
-    @ConfDefault.DefaultString("§fВы §cсломали §fблок привата! Теперь ваша территория §cне защищена")
+    @DefaultString("§fВы §cсломали §fблок привата! Теперь ваша территория §cне защищена")
     String protectedBlockBroken();
 
     @SubSection
-    RegionInfoSection regionInfo();
+    RegionInfo regionInfo();
 
     @SubSection
-    RegionListSection regionList();
+    RegionList regionList();
 
     @SubSection
-    CommandSection command();
+    Command command();
 
-    interface RegionInfoSection {
-        @ConfDefault.DefaultString("§fИспользуйте: §a/rg info регион")
+    interface RegionInfo {
+        @DefaultString("§fИспользуйте: §a/rg info регион")
         String usage();
 
-        @ConfDefault.DefaultStrings({
+        @DefaultStrings({
                 "",
                 "  §e§lИнформация о регионе:",
                 "",
@@ -66,76 +69,87 @@ public interface Message {
         List<String> message();
     }
 
-    interface RegionListSection {
-        @ConfDefault.DefaultString("<newline>  <aqua><b>Список регионов</b></aqua><newline>       ")
+    interface RegionList {
+        @DefaultString("<newline>  <aqua><b>Список регионов</b></aqua><newline>       ")
         String header();
 
-        @ConfDefault.DefaultString("  <white><count>. <green><hover:show_text:'<green>Нажмите, чтобы открыть меню региона'><click:run_command:/rg menu <region_id>><region_id></click></hover> <gray>– <white><location>")
+        @DefaultString("  <white><count>. <green><hover:show_text:'<green>Нажмите, чтобы открыть меню региона'><click:run_command:/rg menu <region_id>><region_id></click></hover> <gray>– <white><location>")
         String region();
 
-        @ConfDefault.DefaultString("  <white>У вас <red>нет <white>регионов")
+        @DefaultString("  <white>У вас <red>нет <white>регионов")
         String noRegion();
     }
 
-    interface CommandSection {
-        @ConfDefault.DefaultString("§fИгрока с таким ником §cне существует")
+    interface Command {
+        @DefaultString("§fИгрока с таким ником §cне существует")
         String playerNotFound();
 
-        @ConfDefault.DefaultString("§fИгрок, с данным ником, §cне состоит §fв вашем регионе")
+        @DefaultString("§fИгрок, с данным ником, §cне состоит §fв вашем регионе")
         String playerNotInRegion();
 
-        @ConfDefault.DefaultString("§fИгрок, с данным ником, §aуже есть §fв вашем регионе")
+        @DefaultString("§fИгрок, с данным ником, §aуже есть §fв вашем регионе")
         String playerAlreadyInRegion();
 
         @SubSection
-        CommandRemoveSection remove();
+        CommandRemove remove();
 
         @SubSection
-        CommandAddMemberSection addMember();
+        CommandAddMember addMember();
 
         @SubSection
-        CommandAddOwnerSection addOwner();
+        CommandAddOwner addOwner();
 
-        interface CommandRemoveSection {
-            @ConfDefault.DefaultString("§fИспользуйте: §a/rg remove регион игрок")
+        @SubSection
+        CommandMenu menu();
+
+        interface CommandRemove {
+            @DefaultString("§fИспользуйте: §a/rg remove регион игрок")
             String usage();
 
-            @ConfDefault.DefaultString("§fИспользуйте: §a/rg remove %region_id% игрок")
+            @DefaultString("§fИспользуйте: §a/rg remove %region_id% игрок")
             String usageAlt();
 
-            @ConfDefault.DefaultString("§fВы §cне можете §fудалить себя")
+            @DefaultString("§fВы §cне можете §fудалить себя")
             String cannotRemoveSelf();
 
-            @ConfDefault.DefaultString("§fВы успешно §cудалили §fигрока &a%another_player_name%")
+            @DefaultString("§fВы успешно §cудалили §fигрока &a%other_player_name%")
             String success();
         }
 
-        interface CommandAddMemberSection {
-            @ConfDefault.DefaultString("§fИспользуйте: §a/rg addmember регион игрок")
+        interface CommandAddMember {
+            @DefaultString("§fИспользуйте: §a/rg addmember регион игрок")
             String usage();
 
-            @ConfDefault.DefaultString("§fИспользуйте: §a/rg addmember %region_id% игрок")
+            @DefaultString("§fИспользуйте: §a/rg addmember %region_id% игрок")
             String usageAlt();
 
-            @ConfDefault.DefaultString("§fВы §cне можете §fдобавить себя")
+            @DefaultString("§fВы §cне можете §fдобавить себя")
             String cannotAddSelf();
 
-            @ConfDefault.DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
+            @DefaultString("§fВы успешно §aдобавили §fигрока &a%other_player_name%")
             String success();
         }
 
-        interface CommandAddOwnerSection {
-            @ConfDefault.DefaultString("§fИспользуйте: §a/rg addowner регион игрок")
+        interface CommandAddOwner {
+            @DefaultString("§fИспользуйте: §a/rg addowner регион игрок")
             String usage();
 
-            @ConfDefault.DefaultString("§fИспользуйте: §a/rg addowner %region_id% игрок")
+            @DefaultString("§fИспользуйте: §a/rg addowner %region_id% игрок")
             String usageAlt();
 
-            @ConfDefault.DefaultString("§fВы §cне можете §fдобавить себя")
+            @DefaultString("§fВы §cне можете §fдобавить себя")
             String cannotAddSelf();
 
-            @ConfDefault.DefaultString("§fВы успешно §aдобавили §fигрока &a%another_player_name%")
+            @DefaultString("§fВы успешно §aдобавили §fигрока &a%other_player_name%")
             String success();
+        }
+
+        interface CommandMenu {
+            @DefaultString("§fИспользуйте: §a/rg menu регион")
+            String usage();
+
+            @ConfDefault.DefaultString("§fВы §cне являетесь §fучастником региона")
+            String noMember();
         }
     }
 }

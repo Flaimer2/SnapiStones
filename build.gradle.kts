@@ -12,7 +12,7 @@ shadowJar.apply {
 }
 
 group = "ru.mcsnapix"
-version = "1.0.0-alpha"
+version = "2.0.0-alpha"
 
 repositories {
     mavenCentral()
@@ -26,6 +26,9 @@ repositories {
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.alessiodp.com/releases/")
+    maven("https://mvn-repo.arim.space/lesser-gpl3/")
 }
 
 dependencies {
@@ -38,8 +41,10 @@ dependencies {
     compileOnly("com.google.code.gson:gson:2.8.9")
     compileOnly("com.sk89q.worldguard:worldguard-legacy:6.2")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:6.1.3-SNAPSHOT")
+    compileOnly("com.alessiodp.lastloginapi:lastloginapi-api:1.7.4")
     // Module Hologram
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.1")
+    compileOnly("me.clip:placeholderapi:2.11.3")
 
     implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.1")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0")
@@ -48,6 +53,7 @@ dependencies {
     implementation("co.aikar:idb-core:1.0.0-SNAPSHOT")
     implementation("de.tr7zw:item-nbt-api:2.11.2")
     implementation("com.zaxxer:HikariCP:2.4.1")
+    implementation("space.arim.morepaperlib:morepaperlib:0.4.2")
 }
 
 sonarqube {
@@ -71,8 +77,9 @@ tasks {
         relocateDependency("org.yaml")
         relocateDependency("com.zaxxer")
         relocateDependency("de.tr7zw")
+        relocateDependency("co.aikar.idb")
+        relocateDependency("space.arim.morepaperlib")
         relocate("co.aikar.commands", "$libraryPackage.acf")
-        relocate("co.aikar.idb", "$libraryPackage.idb")
         relocate("co.aikar.locales", "$libraryPackage.locales")
     }
 
@@ -89,11 +96,11 @@ tasks {
 
 bukkit {
     name = "SnapiStones"
-    version = "1.0.0-alpha"
+    version = "2.0.0-beta"
     main = "ru.mcsnapix.snapistones.plugin.SnapiStones"
     description = "Плагин на блоки привата"
-    depend = listOf("WorldEdit", "WorldGuard")
-    softDepend = listOf("DecentHolograms")
+    depend = listOf("WorldEdit", "WorldGuard", "DecentHolograms", "LastLoginAPI")
+    softDepend = listOf("PlaceholderAPI")
     website = "https://mcsnapix.ru"
     authors = listOf("SnapiX", "Flaimer")
 }

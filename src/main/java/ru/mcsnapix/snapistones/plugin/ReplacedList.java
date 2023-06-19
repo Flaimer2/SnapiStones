@@ -11,7 +11,7 @@ public class ReplacedList extends ArrayList<String> {
     public ReplacedList replace(String id, String replacement) {
         ReplacedList newStrings = new ReplacedList(new ArrayList<>());
         for (String s : this) {
-            if (s.equals(id)) {
+            if (s.contains(id)) {
                 if (replacement == null) {
                     continue;
                 }
@@ -27,7 +27,7 @@ public class ReplacedList extends ArrayList<String> {
     public ReplacedList replace(String id, List<String> replacement) {
         ReplacedList newStrings = new ReplacedList(new ArrayList<>());
         for (String s : this) {
-            if (s.equals(id)) {
+            if (s.contains(id)) {
                 if (replacement == null) {
                     continue;
                 }

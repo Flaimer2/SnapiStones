@@ -1,10 +1,13 @@
 package ru.mcsnapix.snapistones.plugin.database;
 
 public enum Column {
+    AUTHOR("region_author"),
     OWNERS("owners_name"),
     MEMBERS("members_name"),
     DATE("creation_date"),
-    LOCATION("location"),
+    HOME_LOCATION("home_location"),
+    LOCATION("block_location"),
+    MATERIAL("block_material"),
     EFFECTS("effects"),
     ACTIVE_EFFECTS("active_effects"),
     MAX_OWNERS("max_owners"),

@@ -1,7 +1,5 @@
 package ru.mcsnapix.snapistones.plugin.handlers;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -13,24 +11,20 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import ru.mcsnapix.snapistones.plugin.SnapiStones;
-import ru.mcsnapix.snapistones.plugin.api.ProtectedBlock;
-import ru.mcsnapix.snapistones.plugin.api.SnapAPI;
-import ru.mcsnapix.snapistones.plugin.api.SnapPlayer;
+import ru.mcsnapix.snapistones.plugin.api.SnapApi;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionEnterEvent;
 import ru.mcsnapix.snapistones.plugin.api.events.region.RegionLeaveEvent;
-import ru.mcsnapix.snapistones.plugin.utils.BlockUtil;
-import ru.mcsnapix.snapistones.plugin.utils.RegionUtil;
+import ru.mcsnapix.snapistones.plugin.api.region.Region;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
 @RequiredArgsConstructor
 public class PlayerHandler implements Listener {
-    @NonNull
     private final SnapiStones plugin;
-    private final Map<Player, ProtectedRegion> isOnABase = new WeakHashMap<>();
+    private final Map<Player, Region> isOnABase = new WeakHashMap<>();
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerMove(PlayerMoveEvent e) {
         checkEvents(e.getPlayer());
     }
@@ -47,40 +41,41 @@ public class PlayerHandler implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        checkEvents(e.getPlayer());
+        plugin.getMorePaperLib().scheduling().asyncScheduler().run(() -> checkEvents(e.getPlayer()));
     }
 
-    private void checkEvents(Player player) {
-        if (player == null) {
-            return;
-        }
+    private void checkEvents(final Player player) {
+        if (player == null) return;
 
-        RegionUtil regionUtil = new RegionUtil(player);
         Location location = player.getLocation();
 
-        ProtectedRegion currentRegion = regionUtil.getRegion(location);
-        ProtectedRegion previousRegion = isOnABase.get(player);
+        Region currentRegion = SnapApi.getRegion(location);
+        Region previousRegion = isOnABase.get(player);
 
-        SnapPlayer snapPlayer = SnapAPI.player(player, currentRegion);
-
-        if (previousRegion != null) {
-            triggerRegionEvent(snapPlayer, previousRegion, location, EventType.LEAVE);
-            triggerRegionEvent(snapPlayer, currentRegion, location, EventType.ENTER);
-            isOnABase.replace(snapPlayer.player(), currentRegion);
-        } else if (currentRegion != null) {
-            triggerRegionEvent(snapPlayer, currentRegion, location, EventType.ENTER);
-            isOnABase.put(snapPlayer.player(), currentRegion);
+        if (currentRegion != null) {
+            if (previousRegion != null) {
+                if (currentRegion != previousRegion) {
+                    triggerRegionEvent(player, previousRegion, EventType.LEAVE);
+                    triggerRegionEvent(player, currentRegion, EventType.ENTER);
+                    isOnABase.replace(player, currentRegion);
+                }
+            } else {
+                triggerRegionEvent(player, currentRegion, EventType.ENTER);
+                isOnABase.put(player, currentRegion);
+            }
         } else {
-            isOnABase.remove(snapPlayer.player());
+            if (previousRegion != null) {
+                triggerRegionEvent(player, previousRegion, EventType.LEAVE);
+                isOnABase.remove(player);
+            }
         }
     }
 
-    private void triggerRegionEvent(SnapPlayer snapPlayer, ProtectedRegion region, Location location, EventType eventType) {
-        ProtectedBlock protectedBlock = BlockUtil.protectedBlock(location);
+    private void triggerRegionEvent(final Player player, final Region region, final EventType eventType) {
         if (eventType == EventType.ENTER) {
-            plugin.callEvent(new RegionEnterEvent(region, snapPlayer, protectedBlock));
+            plugin.callEvent(new RegionEnterEvent(player, region));
         } else if (eventType == EventType.LEAVE) {
-            plugin.callEvent(new RegionLeaveEvent(region, snapPlayer, protectedBlock));
+            plugin.callEvent(new RegionLeaveEvent(player, region));
         }
     }
 
