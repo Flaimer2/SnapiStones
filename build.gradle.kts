@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.sonarqube") version "4.2.1.3168"
+    id("org.sonarqube") version "4.0.0.2929"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -56,7 +56,7 @@ dependencies {
     implementation("space.arim.morepaperlib:morepaperlib:0.4.2")
 }
 
-sonar {
+sonarqube {
   properties {
     property("sonar.projectKey", "Flaimer2_SnapiStones")
     property("sonar.organization", "flaimer2-1")
@@ -85,7 +85,6 @@ tasks {
 
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(11)
         options.compilerArgs.addAll(listOf("-nowarn", "-Xlint:-unchecked", "-Xlint:-deprecation"))
     }
 
